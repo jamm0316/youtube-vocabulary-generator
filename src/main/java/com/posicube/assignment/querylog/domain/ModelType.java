@@ -4,18 +4,19 @@ import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 @Getter
 public enum ModelType {
-    GPT5("gpt-5", 0.25), GPT_4O_MINI("gpt-4o-mini", 0.15);
+    GPT5("gpt-5", "0.25"), GPT_4O_MINI("gpt-4o-mini", "0.15");
 
     private final String name;
-    private final double pricePer1KToken;
+    private final BigDecimal pricePer1KToken;
 
-    ModelType(String name, double pricePer1KToken) {
+    ModelType(String name, String pricePer1KToken) {
         this.name = name;
-        this.pricePer1KToken = pricePer1KToken;
+        this.pricePer1KToken = new BigDecimal(pricePer1KToken);
     }
 
     public static ModelType from(String name) {
