@@ -38,7 +38,7 @@ public class QueryLog {
     private long usedTokens;
 
     @Column(nullable = false)
-    private double cost;
+    private java.math.BigDecimal cost;
 
     @Column(nullable = false)
     private LocalDateTime createAt;
