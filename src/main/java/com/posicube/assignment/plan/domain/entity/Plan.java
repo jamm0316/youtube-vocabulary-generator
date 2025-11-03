@@ -44,8 +44,8 @@ public class Plan {
         }
     }
 
-    static public Plan createLite() {
-        return new Plan(PlanType.LITE);
+    static public Plan create(PlanType type) {
+        return new Plan(type);
     }
 
     public void changePlanType(PlanType newType) {
