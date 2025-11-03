@@ -1,4 +1,4 @@
-package com.posicube.assignment.user.exception;
+package com.posicube.assignment.users.exception;
 
 import com.posicube.assignment.common.baseResponse.ResponseStatus;
 import lombok.Getter;

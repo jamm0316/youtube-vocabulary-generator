@@ -2,7 +2,7 @@ package com.posicube.assignment.querylog.domain;
 
 import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
-import com.posicube.assignment.user.domain.entity.User;
+import com.posicube.assignment.users.domain.entity.Users;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,7 +27,7 @@ public class QueryLog {
     @JoinColumn(name = "user_id", nullable = false,
             foreignKey = @ForeignKey(name = "FK_QUERY_LOG_USER"))
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User user;
+    private Users user;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -49,7 +49,7 @@ public class QueryLog {
     private static final double CHARS_TO_TOKENS_RATIO = 0.75;
     private static final BigDecimal THOUSAND = new BigDecimal("1000");
 
-    private QueryLog(User user, String q, ModelType type) {
+    private QueryLog(Users user, String q, ModelType type) {
         validateQueryLogInvariants(user, q, type);
         this.user = user;
         this.type = type;
@@ -59,11 +59,11 @@ public class QueryLog {
         createAt = LocalDateTime.now();
     }
 
-    public static QueryLog create(User user, String q, ModelType type) {
+    public static QueryLog create(Users user, String q, ModelType type) {
         return new QueryLog(user, q, type);
     }
 
-    private static void validateQueryLogInvariants(User user, String q, ModelType type) {
+    private static void validateQueryLogInvariants(Users user, String q, ModelType type) {
         if (Objects.isNull(user)) {
             throw new BaseException(QueryLogExceptionStatus.USER_CANNOT_BE_NULL);
         }

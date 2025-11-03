@@ -5,8 +5,8 @@ import com.posicube.assignment.plan.domain.entity.PlanType;
 import com.posicube.assignment.querylog.domain.ModelType;
 import com.posicube.assignment.querylog.domain.QueryLog;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
-import com.posicube.assignment.user.domain.entity.User;
-import com.posicube.assignment.user.presentation.dtos.UserCreateRequest;
+import com.posicube.assignment.users.domain.entity.Users;
+import com.posicube.assignment.users.presentation.dtos.UserCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,13 +18,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class QueryLogTest {
-    private User testUser;
+    private Users testUser;
 
     @BeforeEach
     void setUp() {
-        UserCreateRequest request = UserCreateRequest.create(
-                "evanbackeng@gmail.com", "pass1234", "evan", PlanType.PRO);
-        testUser = User.create(request);
+        testUser = Users.create("evanbackeng@gmail.com", "pass1234", "evan", PlanType.PRO);
     }
 
     @Test

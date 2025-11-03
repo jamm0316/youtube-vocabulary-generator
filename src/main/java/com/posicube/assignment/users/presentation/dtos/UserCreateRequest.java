@@ -1,4 +1,4 @@
-package com.posicube.assignment.user.presentation.dtos;
+package com.posicube.assignment.users.presentation.dtos;
 
 import com.posicube.assignment.plan.domain.entity.PlanType;
 import jakarta.validation.constraints.NotBlank;
