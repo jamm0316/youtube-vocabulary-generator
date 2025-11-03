@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public enum QueryLogExceptionStatus implements ResponseStatus {
     /**
-     * User 오류
+     * QueryLog 오류
      */
     QUERY_CANNOT_BE_NULL(false, "QUERY_LOG-1", "질의 내용은 null이거나 비어있을 수 없습니다."),
     MODEL_TYPE_CANNOT_BE_NULL(false, "QUERY_LOG-2", "모델 타입은 null일 수 없습니다."),
