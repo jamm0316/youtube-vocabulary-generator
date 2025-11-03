@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -37,11 +39,15 @@ public class QueryLog {
     @Column(nullable = false)
     private long usedTokens;
 
-    @Column(nullable = false)
-    private double cost;
+    @Column(nullable = false, precision = 10, scale = 4)
+    private BigDecimal cost;
 
     @Column(nullable = false)
     private LocalDateTime createAt;
+
+    private static final int MAX_QUERY_LENGTH = 800;
+    private static final double CHARS_TO_TOKENS_RATIO = 0.75;
+    private static final BigDecimal THOUSAND = new BigDecimal("1000");
 
     private QueryLog(User user, String q, ModelType type) {
         validateQueryLogInvariants(user, q, type);
@@ -70,18 +76,21 @@ public class QueryLog {
             throw new BaseException(QueryLogExceptionStatus.MODEL_TYPE_CANNOT_BE_NULL);
         }
 
-        if (q.length() > 800) {
+        if (q.trim().length() > MAX_QUERY_LENGTH) {
             throw new BaseException(QueryLogExceptionStatus.QUERY_TOO_LONG);
         }
     }
 
     private long calculateTokens(String q) {
-        return Math.round(q.length() * 0.75);
+        return Math.round(q.length() * CHARS_TO_TOKENS_RATIO);
     }
 
-    private double calculateCost(long tokens, ModelType type) {
-        double pricePer1KToken = type.getPricePer1KToken();
-        double calculateCost = (tokens / 1_000.0) * pricePer1KToken;
-        return Math.round(calculateCost * 100.0) / 100.0;
+    private BigDecimal calculateCost(long tokens, ModelType type) {
+        BigDecimal pricePer1KToken = type.getPricePer1KToken();
+        BigDecimal tokenBigDecimal = BigDecimal.valueOf(tokens);
+
+        BigDecimal costBefoeRounding = tokenBigDecimal.divide(THOUSAND)
+                .multiply(pricePer1KToken);
+        return costBefoeRounding.setScale(2, RoundingMode.HALF_UP);
     }
 }
