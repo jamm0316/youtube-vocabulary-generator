@@ -11,6 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -31,7 +34,12 @@ public class QueryLogTest {
         String prompt = "안녕하세요? 이번 포지큐브 백엔드 주니어 개발자에 지원하게 된 송재명 입니다. 100자에 맞춰 프롬프트를 작성하면 GPT-5모델은 5L의 토큰과 0.02의 비용이 청구될 것입니다.";
         ModelType gpt5 = ModelType.GPT5;
         long expectedTokens = Math.round(prompt.length() * 0.75);
-        double expectedCost = Math.round(expectedTokens / 1_000.0 * gpt5.getPricePer1KToken() * 100.0) / 100.0;
+
+        BigDecimal bigDecimal = new BigDecimal(expectedTokens);
+        BigDecimal THOUSAND = new BigDecimal(1000);
+        BigDecimal costBefoeRounding = bigDecimal.divide(THOUSAND)
+                .multiply(gpt5.getPricePer1KToken());
+        BigDecimal expectedCost = costBefoeRounding.setScale(2, RoundingMode.HALF_UP);
 
         //when
         QueryLog queryLog = QueryLog.create(testUser, prompt, gpt5);
@@ -52,7 +60,12 @@ public class QueryLogTest {
         String prompt = "안녕하세요? 이번 포지큐브 백엔드 주니어 개발자에 지원하게 된 송재명 입니다. 100자에 맞춰 프롬프트를 작성하면 GPT-4모델은 5L의 토큰과 0.02의 비용이 청구될 것입니다.";
         ModelType gpt4oMini = ModelType.GPT_4O_MINI;
         long expectedTokens = Math.round(prompt.length() * 0.75);
-        double expectedCost = Math.round(expectedTokens / 1_000.0 * gpt4oMini.getPricePer1KToken() * 100.0) / 100.0;
+
+        BigDecimal bigDecimal = new BigDecimal(expectedTokens);
+        BigDecimal THOUSAND = new BigDecimal(1000);
+        BigDecimal costBefoeRounding = bigDecimal.divide(THOUSAND)
+                .multiply(gpt4oMini.getPricePer1KToken());
+        BigDecimal expectedCost = costBefoeRounding.setScale(2, RoundingMode.HALF_UP);
 
         //when
         QueryLog queryLog = QueryLog.create(testUser, prompt, gpt4oMini);
@@ -70,16 +83,16 @@ public class QueryLogTest {
     @DisplayName("성공: 토큰 계산 시 소수접을 정확히 반올림 한다.")
     public void createQueryLog_roundsTokensCorrectly() throws Exception {
         //given
-        String promptWithRondDown = "Length 999";  //10자 -> 10 * 0.75 = 7.5 -> 8
-        String promptWithRondUp = "Length 1000"; //11자 -> 11 * 0.75 = 8.25 -> 8
+        String promptRoundingUpFromHalf = "Length 999";  //10자 -> 10 * 0.75 = 7.5 -> 8
+        String promptRoundingDownFromQuarter = "Length 1000"; //11자 -> 11 * 0.75 = 8.25 -> 8
 
         //when
-        QueryLog queryLogDown = QueryLog.create(testUser, promptWithRondDown, ModelType.GPT5);
-        QueryLog queryLogUp = QueryLog.create(testUser, promptWithRondUp, ModelType.GPT5);
+        QueryLog queryLogRoundingUp = QueryLog.create(testUser, promptRoundingUpFromHalf, ModelType.GPT5);
+        QueryLog queryLogRoundingDown = QueryLog.create(testUser, promptRoundingDownFromQuarter, ModelType.GPT5);
 
         //then
-        assertThat(queryLogDown.getUsedTokens()).isEqualTo(8L);
-        assertThat(queryLogUp.getUsedTokens()).isEqualTo(8L);
+        assertThat(queryLogRoundingUp.getUsedTokens()).isEqualTo(8L);
+        assertThat(queryLogRoundingDown.getUsedTokens()).isEqualTo(8L);
     }
 
     @Test
