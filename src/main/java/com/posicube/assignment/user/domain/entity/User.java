@@ -64,7 +64,7 @@ public class User {
         }
     }
 
-    public User create(String account, String password, String name) {
+    static public User create(String account, String password, String name) {
         return new User(account, password, name);
     }
 }
