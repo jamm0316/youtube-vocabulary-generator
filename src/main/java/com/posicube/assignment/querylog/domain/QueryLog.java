@@ -39,7 +39,7 @@ public class QueryLog {
     @Column(nullable = false)
     private long usedTokens;
 
-    @Column(nullable = false, precision = 10, scale = 4)
+    @Column(nullable = false, precision = 19, scale = 4)
     private BigDecimal cost;
 
     @Column(nullable = false)
@@ -89,7 +89,7 @@ public class QueryLog {
         BigDecimal pricePer1KToken = type.getPricePer1KToken();
         BigDecimal tokenBigDecimal = BigDecimal.valueOf(tokens);
 
-        BigDecimal costBefoeRounding = tokenBigDecimal.divide(THOUSAND)
+        BigDecimal costBefoeRounding = tokenBigDecimal.divide(THOUSAND, 10, RoundingMode.HALF_UP)
                 .multiply(pricePer1KToken);
         return costBefoeRounding.setScale(2, RoundingMode.HALF_UP);
     }

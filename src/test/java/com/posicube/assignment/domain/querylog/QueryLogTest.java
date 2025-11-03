@@ -37,7 +37,7 @@ public class QueryLogTest {
 
         BigDecimal bigDecimal = new BigDecimal(expectedTokens);
         BigDecimal THOUSAND = new BigDecimal(1000);
-        BigDecimal costBefoeRounding = bigDecimal.divide(THOUSAND)
+        BigDecimal costBefoeRounding = bigDecimal.divide(THOUSAND, 10, RoundingMode.HALF_UP)
                 .multiply(gpt5.getPricePer1KToken());
         BigDecimal expectedCost = costBefoeRounding.setScale(2, RoundingMode.HALF_UP);
 
@@ -63,7 +63,7 @@ public class QueryLogTest {
 
         BigDecimal bigDecimal = new BigDecimal(expectedTokens);
         BigDecimal THOUSAND = new BigDecimal(1000);
-        BigDecimal costBefoeRounding = bigDecimal.divide(THOUSAND)
+        BigDecimal costBefoeRounding = bigDecimal.divide(THOUSAND, 10, RoundingMode.HALF_UP)
                 .multiply(gpt4oMini.getPricePer1KToken());
         BigDecimal expectedCost = costBefoeRounding.setScale(2, RoundingMode.HALF_UP);
 
