@@ -54,3 +54,4 @@ public class PlanTest {
                 .hasMessage(PlanExceptionStatus.CANNOT_CHANGE_SAME_TYPE.getMessage());
     }
 }
+
