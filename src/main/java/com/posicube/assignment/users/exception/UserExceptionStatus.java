@@ -15,6 +15,7 @@ public enum UserExceptionStatus implements ResponseStatus {
     PASSWORD_CANNOT_CONTAIN_WHITESPACE(false, "User-5", "password는 공백을 포함할 수 없습니다."),
     NAME_CANNOT_CONTAIN_WHITESPACE(false, "User-6", "name은 공백을 포함할 수 없습니다."),
     TOKEN_CANNOT_NULL(false, "User-7", "tokens는 null일 수 없습니다."),
+    INVALID_PLAN_FOR_USER_CREATION(false, "User-8", "사용자 생성에 유효하지 않은 요금제입니다."),
     ;
 
     private final boolean isSuccess;
