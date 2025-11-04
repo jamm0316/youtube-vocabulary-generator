@@ -82,7 +82,7 @@ public class Users {
     }
 
     public void validateQueryPermission() {
-        if (tokens.getRemainingTokens() <= 0) {
+        if (this.tokens.getRemainingTokens() <= 0) {
             throw new BaseException(TokenExceptionStatus.INSUFFICIENT_TOKENS);
         }
     }
