@@ -2,9 +2,7 @@ package com.posicube.assignment.users.domain.entity;
 
 import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.domain.entity.Plan;
-import com.posicube.assignment.plan.domain.entity.PlanType;
 import com.posicube.assignment.users.exception.UserExceptionStatus;
-import com.posicube.assignment.users.presentation.dtos.UserCreateRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,7 +16,7 @@ public class Users {
     @GeneratedValue
     private long id;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_type", nullable = false,
             foreignKey = @ForeignKey(name = "FK_USER_PLAN"))
     private Plan plan;
@@ -32,8 +30,8 @@ public class Users {
     @Column(nullable = false, length = 30)
     private String name;
 
-    private Users(String account, String password, String name, PlanType type) {
-        plan = Plan.create(type);
+    private Users(String account, String password, String name, Plan plan) {
+        this.plan = plan;
         validateUserInvariants(account, password, name);
         this.account = account.trim();
         this.password = password.trim();
@@ -66,7 +64,7 @@ public class Users {
         }
     }
 
-    static public Users create(String account, String password, String name, PlanType plan) {
+    static public Users create(String account, String password, String name, Plan plan) {
         return new Users(account, password, name, plan);
     }
 }
