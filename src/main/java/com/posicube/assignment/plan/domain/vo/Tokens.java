@@ -1,7 +1,6 @@
-package com.posicube.assignment.plan.domain.entity.vo;
+package com.posicube.assignment.plan.domain.vo;
 
 import com.posicube.assignment.common.exception.BaseException;
-import com.posicube.assignment.plan.domain.entity.PlanType;
 import com.posicube.assignment.plan.exception.PlanExceptionStatus;
 import jakarta.persistence.Embeddable;
 
