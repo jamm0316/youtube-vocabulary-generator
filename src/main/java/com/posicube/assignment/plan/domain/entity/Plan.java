@@ -18,7 +18,7 @@ public class Plan {
     @Enumerated(EnumType.STRING)
     private PlanType type;  //사용자 요금제
 
-    private Plan(PlanType type, long quota) {
+    private Plan(PlanType type) {
         validatePlanInvariants(type);
         this.type = type;
     }
@@ -30,7 +30,7 @@ public class Plan {
     }
 
     static public Plan create(PlanType type) {
-        return new Plan(type, type.getQuota());
+        return new Plan(type);
     }
 
     public void changePlanType(PlanType newType) {
