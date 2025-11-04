@@ -4,25 +4,30 @@ import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.exception.PlanExceptionStatus;
 import lombok.Getter;
 
-import java.util.Arrays;
-import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 public enum PlanType {
-    LITE("LITE", 10_000L), PRO("PRO", 50_000L);
+    LITE(10_000L), PRO( 50_000L);
 
-    private final String name;
     private final long quota;
 
-    PlanType(String name, long quota) {
-        this.name = name;
+    PlanType(long quota) {
         this.quota = quota;
     }
 
+    private static final Map<String, PlanType> stringToEnum
+            = Stream.of(values())
+            .collect(Collectors.toMap(Enum::name, Function.identity()));
+
     public static PlanType from(String name) {
-        return Arrays.stream(values())
-                .filter(planType -> planType.name.toUpperCase(Locale.ROOT).equalsIgnoreCase(name))
-                .findFirst()
+        return Optional.ofNullable(name)
+                .map(String::toUpperCase)
+                .map(stringToEnum::get)
                 .orElseThrow(() -> new BaseException(PlanExceptionStatus.INVALID_PLAN_TYPE));
     }
 }
