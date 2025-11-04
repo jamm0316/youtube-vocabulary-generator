@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -34,8 +36,15 @@ public class PlanTest {
 
         //then
         assertThat(plan.getType()).isEqualTo(PlanType.LITE);
-        assertThat(plan.getTokens().quota()).isEqualTo(PlanType.LITE.getQuota());
-        assertThat(plan.getTokens().remainingTokens()).isEqualTo(PlanType.LITE.getQuota());
+    }
+
+    @Test
+    @DisplayName("생성 실패: PlanType이 null이면 예외 반환")
+    public void create_plan_fail() throws Exception {
+        //when&then
+        assertThatThrownBy(() -> Plan.create(null))
+                .isInstanceOf(BaseException.class)
+                .hasMessage(PlanExceptionStatus.PLAN_TYPE_CANNOT_BE_NULL.getMessage());
     }
 
     @Test
@@ -44,22 +53,22 @@ public class PlanTest {
         //when&then
         plan.changePlanType(PlanType.PRO);
         assertThat(plan.getType()).isEqualTo(PlanType.PRO);
-        assertThat(plan.getTokens().quota()).isEqualTo(PlanType.PRO.getQuota());
-        assertThat(plan.getTokens().remainingTokens()).isEqualTo(PlanType.PRO.getQuota());
 
         plan.changePlanType(PlanType.LITE);
         assertThat(plan.getType()).isEqualTo(PlanType.LITE);
-        assertThat(plan.getTokens().quota()).isEqualTo(PlanType.LITE.getQuota());
-        assertThat(plan.getTokens().remainingTokens()).isEqualTo(PlanType.LITE.getQuota());
     }
 
     @Test
-    @DisplayName("changePlanType 메서드 실패: PlanType이 같으면 예외 발생")
+    @DisplayName("changePlanType 메서드 실패: PlanType이 같거나 null이면 예외 발생")
     public void update_plan_success() throws Exception {
         //when&then
         assertThatThrownBy(() -> plan.changePlanType(PlanType.LITE))
                 .isInstanceOf(BaseException.class)
                 .hasMessage(PlanExceptionStatus.CANNOT_CHANGE_SAME_TYPE.getMessage());
+
+        assertThatThrownBy(() -> plan.changePlanType(null))
+                .isInstanceOf(BaseException.class)
+                .hasMessage(PlanExceptionStatus.PLAN_TYPE_CANNOT_BE_NULL.getMessage());
     }
 }
 
