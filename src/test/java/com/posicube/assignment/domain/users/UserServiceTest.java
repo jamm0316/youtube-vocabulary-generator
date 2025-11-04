@@ -44,8 +44,7 @@ public class UserServiceTest {
         assertThat(createdUser.getName()).isEqualTo("현식");
         assertThat(createdUser.getPlan().getType()).isEqualTo(PlanType.LITE);
 
-        // userRepository.save()가 정확히 1번 호출되었는지 검증
-        verify(userRepository).save(any(Users.class));
+        // planService.createPlan()이 정확히 1번 호출되었는지 검증
         verify(planService).createPlan("LITE");
 
         // userRepository.save()에 어떤 Users 객체가 전달되었는지 캡처 후 검증
