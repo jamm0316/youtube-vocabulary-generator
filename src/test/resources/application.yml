@@ -1,0 +1,9 @@
+### Test DB ###
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
