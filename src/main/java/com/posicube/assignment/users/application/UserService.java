@@ -1,7 +1,9 @@
 package com.posicube.assignment.users.application;
 
+import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.application.PlanService;
 import com.posicube.assignment.plan.domain.entity.Plan;
+import com.posicube.assignment.plan.exception.PlanExceptionStatus;
 import com.posicube.assignment.users.domain.entity.Users;
 import com.posicube.assignment.users.domain.port.UserRepository;
 import com.posicube.assignment.users.presentation.dtos.UserCreateRequest;
@@ -19,7 +21,8 @@ public class UserService {
 
     @Transactional
     public Users createUser(UserCreateRequest request) {
-        Plan plan = planService.createPlan(request.plan());
+        Plan plan = planService.findPlanByType(request.plan())
+                .orElseThrow(() -> new BaseException(PlanExceptionStatus.INVALID_PLAN_TYPE));
         Users users = Users.create(
                 request.account(), request.password(), request.name(), plan);
         return userRepository.save(users);
