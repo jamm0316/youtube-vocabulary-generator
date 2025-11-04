@@ -1,6 +1,5 @@
 package com.posicube.assignment.users.presentation.dtos;
 
-import com.posicube.assignment.plan.domain.vo.PlanType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
