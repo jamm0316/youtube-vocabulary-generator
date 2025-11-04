@@ -6,6 +6,7 @@ import com.posicube.assignment.plan.domain.vo.PlanType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class PlanService {
     private final PlanRepository planRepository;
 
+    @Transactional
     public Plan createPlan(String type) {
         Plan plan = Plan.create(PlanType.from(type));
         return planRepository.save(plan);
