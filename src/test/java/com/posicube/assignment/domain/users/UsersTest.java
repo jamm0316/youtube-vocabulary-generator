@@ -32,6 +32,8 @@ public class UsersTest {
         assertThat(user.getPassword()).isEqualTo("pass1234");
         assertThat(user.getName()).isEqualTo("evan");
         assertThat(user.getPlan().getType()).isEqualTo(PlanType.LITE);
+        assertThat(user.getTokens().getQuota()).isEqualTo(PlanType.LITE.getQuota());
+        assertThat(user.getTokens().getRemainingTokens()).isEqualTo(PlanType.LITE.getQuota());
     }
 
     @Test
