@@ -29,7 +29,7 @@ public class DataInitializer implements ApplicationRunner {
             }
         } catch (DataAccessException e) {
             log.error("Plan 데이터 초기화에 실패했습니다.", e);
-            throw new RuntimeException("Plan 초기화 실패");
+            throw new DataAccessException("Plan 초기화 실패", e){};
         }
 
     }
