@@ -15,7 +15,7 @@ import java.util.Optional;
 public class PlanService {
     private final PlanRepository planRepository;
 
-    public Optional<Plan> findPlanByType(String name) {
-        return planRepository.findPlanByType(PlanType.from(name));
+    public Optional<Plan> findPlanByType(PlanType type) {
+        return planRepository.findPlanByType(type);
     }
 }
