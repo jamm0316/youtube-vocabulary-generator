@@ -2,7 +2,7 @@ package com.posicube.assignment.domain.plan;
 
 import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.domain.entity.Plan;
-import com.posicube.assignment.plan.domain.entity.PlanType;
+import com.posicube.assignment.plan.domain.vo.PlanType;
 import com.posicube.assignment.plan.exception.PlanExceptionStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
