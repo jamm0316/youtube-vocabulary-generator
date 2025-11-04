@@ -15,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -31,7 +33,7 @@ public class UserServiceTest {
         UserCreateRequest request = new UserCreateRequest("hysic88", "123456", "현식", "LITE");
         Plan plan = Plan.create(PlanType.LITE);
 
-        when(planService.createPlan(anyString())).thenReturn(plan);
+        when(planService.findPlanByType(any(PlanType.class))).thenReturn(Optional.of(plan));
         when(userRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         //when
@@ -45,7 +47,7 @@ public class UserServiceTest {
         assertThat(createdUser.getPlan().getType()).isEqualTo(PlanType.LITE);
 
         // planService.createPlan()이 정확히 1번 호출되었는지 검증
-        verify(planService).createPlan("LITE");
+        verify(planService).findPlanByType(PlanType.from("LITE"));
 
         // userRepository.save()에 어떤 Users 객체가 전달되었는지 캡처 후 검증
         ArgumentCaptor<Users> userCaptor = ArgumentCaptor.forClass(Users.class);
