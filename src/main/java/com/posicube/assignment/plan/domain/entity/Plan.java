@@ -2,15 +2,12 @@ package com.posicube.assignment.plan.domain.entity;
 
 import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.domain.vo.PlanType;
-import com.posicube.assignment.plan.domain.vo.Tokens;
 import com.posicube.assignment.plan.exception.PlanExceptionStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -21,23 +18,9 @@ public class Plan {
     @Enumerated(EnumType.STRING)
     private PlanType type;  //사용자 요금제
 
-    @Embedded
-    @Column(nullable = false)
-    private Tokens tokens;
-
-    @Column(nullable = false, precision = 19, scale = 4)
-    private BigDecimal totalPrice;
-
-    @Column(nullable = false)
-    private LocalDateTime updateAt;
-
     private Plan(PlanType type) {
         validatePlanInvariants(type);
-        Tokens tokens = Tokens.create(type);
         this.type = type;
-        this.tokens = tokens;
-        totalPrice = BigDecimal.ZERO;
-        updateAt = LocalDateTime.now();
     }
 
     private void validatePlanInvariants(PlanType type) {
@@ -60,7 +43,5 @@ public class Plan {
         }
 
         this.type = newType;
-        this.tokens = Tokens.create(newType);
-        this.updateAt = LocalDateTime.now();
     }
 }

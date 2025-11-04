@@ -2,11 +2,14 @@ package com.posicube.assignment.users.domain.entity;
 
 import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.domain.entity.Plan;
+import com.posicube.assignment.users.domain.vo.Tokens;
 import com.posicube.assignment.users.exception.UserExceptionStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -30,15 +33,20 @@ public class Users {
     @Column(nullable = false, length = 30)
     private String name;
 
+    @Embedded
+    private Tokens tokens;
+
     private Users(String account, String password, String name, Plan plan) {
         this.plan = plan;
-        validateUserInvariants(account, password, name);
+        Tokens tokens = Tokens.initialOf(plan);
+        validateUserInvariants(account, password, name, tokens);
         this.account = account.trim();
         this.password = password.trim();
         this.name = name.trim();
+        this.tokens = tokens;
     }
 
-    private void validateUserInvariants(String account, String password, String name) {
+    private void validateUserInvariants(String account, String password, String name, Tokens tokens) {
         if (account == null || account.trim().isEmpty()) {
             throw new BaseException(UserExceptionStatus.ACCOUNT_CANNOT_BE_NULL);
         }
@@ -61,6 +69,10 @@ public class Users {
 
         if (name.contains(" ")) {
             throw new BaseException(UserExceptionStatus.NAME_CANNOT_CONTAIN_WHITESPACE);
+        }
+
+        if (Objects.isNull(tokens)) {
+            throw new BaseException(UserExceptionStatus.TOKEN_CANNOT_NULL);
         }
     }
 
