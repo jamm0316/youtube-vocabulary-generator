@@ -33,7 +33,7 @@ public class Users {
     @Column(nullable = false, length = 30)
     private String name;
 
-    @Column(nullable = false)
+    @Embedded
     private Tokens tokens;
 
     private Users(String account, String password, String name, Plan plan) {
