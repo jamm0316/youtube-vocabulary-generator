@@ -14,16 +14,20 @@ import java.util.Optional;
 public class PlanRepositoryImpl implements PlanRepository {
     private final SpringDataJpaPlanRepository jpa;
 
+    @Override
     public Plan save(Plan plan) { return jpa.save(plan); }
 
+    @Override
     public Optional<Plan> findPlanByType(PlanType type) {
         return jpa.findPlanByType(type);
     }
 
+    @Override
     public long count() {
         return jpa.count();
     }
 
+    @Override
     public List<Plan> saveAll(List<Plan> plans) {
         return jpa.saveAll(plans);
     }
