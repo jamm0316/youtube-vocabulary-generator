@@ -3,9 +3,9 @@ package com.posicube.assignment.querylog.application;
 import com.posicube.assignment.LlmClient;
 import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.common.utils.TokenCalculator;
-import com.posicube.assignment.querylog.domain.ModelType;
+import com.posicube.assignment.querylog.domain.vo.ModelType;
 import com.posicube.assignment.querylog.domain.port.QueryLogRepository;
-import com.posicube.assignment.querylog.domain.vo.QueryLog;
+import com.posicube.assignment.querylog.domain.QueryLog;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
 import com.posicube.assignment.querylog.presentation.dtos.QueryRequest;
 import com.posicube.assignment.querylog.presentation.dtos.QueryResponse;
@@ -40,16 +40,22 @@ public class QueryLogService {
         user.validateQueryPermission();
 
         //4. llm 호출
-        long usedTokens = tokenCalculator.calculateTokensFromPrompt(request.q());
-        String answer = llmClient.query(request.q(), request.model());
+        Long usedTokens = tokenCalculator.calculateTokensFromPrompt(request.q());
+        String answer;
+
+        try {
+            answer = llmClient.query(request.q(), request.model());
+        } catch (Exception e) {
+            throw new BaseException(QueryLogExceptionStatus.LLM_API_ERROR);
+        }
 
         //토큰 사용
         user.useTokens(usedTokens);
 
         //6. queryLog 저장
-        QueryLog queryLog = QueryLog.create(user, request.q(), ModelType.from(request.model()), usedTokens);
-        queryLogRepository.save(queryLog);
+        QueryLog queryLog = QueryLog.create(user, request.q(), ModelType.from(request.model()), answer, usedTokens);
+        QueryLog save = queryLogRepository.save(queryLog);
 
-        return QueryResponse.from(answer);
+        return QueryResponse.from(save);
     }
 }

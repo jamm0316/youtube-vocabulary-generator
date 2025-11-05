@@ -8,7 +8,7 @@ import com.posicube.assignment.plan.domain.vo.PlanType;
 import com.posicube.assignment.querylog.application.QueryLogService;
 import com.posicube.assignment.querylog.application.RateLimiter;
 import com.posicube.assignment.querylog.domain.port.QueryLogRepository;
-import com.posicube.assignment.querylog.domain.vo.QueryLog;
+import com.posicube.assignment.querylog.domain.QueryLog;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
 import com.posicube.assignment.querylog.presentation.dtos.QueryRequest;
 import com.posicube.assignment.querylog.presentation.dtos.QueryResponse;
@@ -156,8 +156,32 @@ public class QueryLogServiceTest {
         //then
         assertThat(response.answer()).isEqualTo("i".repeat(50));
         verify(mockUser, times(1)).useTokens(expectedTokens);
+        verify(queryLogRepository, times(1)).save(any(QueryLog.class));
     }
 
-    //todo: 6단계 저장 성공
-    //todo: 7단계 호출 실패
+    @Test
+    @DisplayName("LLM 클라이언트 호출 실패 시 예외 발생 및 토큰 미차감")
+    public void submitQuery_llmClient_fail() throws Exception {
+        //given
+        Tokens tokensMock = mock(Tokens.class);
+        when(tokensMock.getRemainingTokens()).thenReturn(10000L);
+        ReflectionTestUtils.setField(mockUser, "tokens", tokensMock);
+
+        when(userRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
+        when(rateLimiter.isAllowed(1L)).thenReturn(true);
+
+        long expectedTokens = tokenCalculator.calculateTokensFromPrompt(mockRequest.q());
+        when(tokenCalculator.calculateTokensFromPrompt(mockRequest.q())).thenReturn(expectedTokens);
+
+        when(llmClient.query(mockRequest.q(), mockRequest.model()))
+                .thenThrow(new RuntimeException("외부 API 호출 중 오류가 발생했습니다"));
+
+        //when&then
+        assertThatThrownBy(() -> queryService.submitQuery(1L, mockRequest))
+                .isInstanceOf(BaseException.class)
+                .hasMessage(QueryLogExceptionStatus.LLM_API_ERROR.getMessage());
+
+        verify(mockUser, never()).useTokens(anyLong());
+        verify(queryLogRepository, never()).save(any(QueryLog.class));
+    }
 }
