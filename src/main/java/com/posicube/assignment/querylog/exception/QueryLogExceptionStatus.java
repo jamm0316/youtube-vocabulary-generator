@@ -14,6 +14,8 @@ public enum QueryLogExceptionStatus implements ResponseStatus {
     USER_CANNOT_BE_NULL(false, "QUERY_LOG-4", "사용자 정보는 null일 수 없습니다."),
     QUERY_TOO_LONG(false, "QUERY_LOG-5", "쿼리는 1자 이상 800자 이내로 작성해야합니다."),
     TOO_MANY_REQUESTS(false, "QUERY_LOG-6", "1분 이내 요청 30개를 초과할 수 없습니다."),
+    USED_TOKEN_CANNOT_BE_NULL(false, "QUERY_LOG-7", "사용된 토큰은 null일 수 없습니다."),
+
     ;
 
     private final boolean isSuccess;
