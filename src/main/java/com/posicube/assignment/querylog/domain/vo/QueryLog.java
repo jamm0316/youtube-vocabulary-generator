@@ -47,7 +47,6 @@ public class QueryLog {
     private LocalDateTime createAt;
 
     private static final int MAX_QUERY_LENGTH = 800;
-    private static final double CHARS_TO_TOKENS_RATIO = 0.75;
     private static final BigDecimal THOUSAND = new BigDecimal("1000");
 
     private QueryLog(Users user, String q, ModelType type, Long usedTokens) {
