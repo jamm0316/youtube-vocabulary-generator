@@ -15,7 +15,8 @@ public enum QueryLogExceptionStatus implements ResponseStatus {
     QUERY_TOO_LONG(false, "QUERY_LOG-5", "쿼리는 1자 이상 800자 이내로 작성해야합니다."),
     TOO_MANY_REQUESTS(false, "QUERY_LOG-6", "1분 이내 요청 30개를 초과할 수 없습니다."),
     USED_TOKEN_CANNOT_BE_NULL(false, "QUERY_LOG-7", "사용된 토큰은 null일 수 없습니다."),
-
+    LLM_API_ERROR(false, "QUERY_LOG-8", "LLM API 동작 중 에러가 발생하였습니다."),
+    ANSWER_CANNOT_BE_NULL(false, "QUERY_LOG-9", "답변이 null일 수 없습니다."),
     ;
 
     private final boolean isSuccess;
