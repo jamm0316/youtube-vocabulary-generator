@@ -1,4 +1,4 @@
-package com.posicube.assignment.querylog.domain;
+package com.posicube.assignment.querylog.domain.vo;
 
 import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
