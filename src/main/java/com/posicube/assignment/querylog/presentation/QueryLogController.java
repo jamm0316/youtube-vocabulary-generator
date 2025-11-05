@@ -18,8 +18,7 @@ public class QueryLogController {
     public BaseResponse<QueryResponse> submitQuery(
             @RequestHeader("X-User-Id") Long userId,
             @Valid @RequestBody QueryRequest request) {
-        queryService.submitQuery(userId, request);
-
-        return null;
+        QueryResponse response = queryService.submitQuery(userId, request);
+        return new BaseResponse<>(response);
     }
 }
