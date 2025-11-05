@@ -148,7 +148,6 @@ public class QueryLogTest {
     public void createQuery_withNullUsedTokens_fail() throws Exception {
         //given
         String prompt = "usedToken이 null이면 예외를 발생시킨다.";
-        long usedTokens = tokenCalculator.calculateTokensFromPrompt(prompt);
 
         //when&then
         assertThatThrownBy(() -> QueryLog.create(testUser, prompt, ModelType.GPT5, null))
