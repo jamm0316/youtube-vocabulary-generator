@@ -1,6 +1,7 @@
 package com.posicube.assignment.querylog.domain;
 
 import com.posicube.assignment.common.exception.BaseException;
+import com.posicube.assignment.querylog.domain.vo.ModelType;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
 import com.posicube.assignment.users.domain.entity.Users;
 import jakarta.persistence.*;
@@ -37,7 +38,10 @@ public class QueryLog {
     private String content;
 
     @Column(nullable = false)
-    private long usedTokens;
+    private String answer;
+
+    @Column(nullable = false)
+    private Long usedTokens;
 
     @Column(nullable = false, precision = 19, scale = 4)
     private BigDecimal cost;
@@ -46,24 +50,24 @@ public class QueryLog {
     private LocalDateTime createAt;
 
     private static final int MAX_QUERY_LENGTH = 800;
-    private static final double CHARS_TO_TOKENS_RATIO = 0.75;
     private static final BigDecimal THOUSAND = new BigDecimal("1000");
 
-    private QueryLog(Users user, String q, ModelType type) {
-        validateQueryLogInvariants(user, q, type);
+    private QueryLog(Users user, String q, ModelType type, String answer, Long usedTokens) {
+        validateQueryLogInvariants(user, q, type, answer, usedTokens);
         this.user = user;
         this.type = type;
         this.content = q.trim();
-        this.usedTokens = calculateTokens(content);
+        this.answer = answer;
+        this.usedTokens = usedTokens;
         this.cost = calculateCost(this.usedTokens, type);
         createAt = LocalDateTime.now();
     }
 
-    public static QueryLog create(Users user, String q, ModelType type) {
-        return new QueryLog(user, q, type);
+    public static QueryLog create(Users user, String q, ModelType type, String answer, Long usedTokens) {
+        return new QueryLog(user, q, type, answer, usedTokens);
     }
 
-    private static void validateQueryLogInvariants(Users user, String q, ModelType type) {
+    private static void validateQueryLogInvariants(Users user, String q, ModelType type, String answer, Long usedTokens) {
         if (Objects.isNull(user)) {
             throw new BaseException(QueryLogExceptionStatus.USER_CANNOT_BE_NULL);
         }
@@ -76,13 +80,17 @@ public class QueryLog {
             throw new BaseException(QueryLogExceptionStatus.MODEL_TYPE_CANNOT_BE_NULL);
         }
 
+        if (Objects.isNull(answer)) {
+            throw new BaseException(QueryLogExceptionStatus.ANSWER_CANNOT_BE_NULL);
+        }
+
+        if (Objects.isNull(usedTokens)) {
+            throw new BaseException(QueryLogExceptionStatus.USED_TOKEN_CANNOT_BE_NULL);
+        }
+
         if (q.trim().length() > MAX_QUERY_LENGTH) {
             throw new BaseException(QueryLogExceptionStatus.QUERY_TOO_LONG);
         }
-    }
-
-    private long calculateTokens(String q) {
-        return Math.round(q.length() * CHARS_TO_TOKENS_RATIO);
     }
 
     private BigDecimal calculateCost(long tokens, ModelType type) {

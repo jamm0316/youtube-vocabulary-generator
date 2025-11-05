@@ -1,8 +1,6 @@
 package com.posicube.assignment.users.domain.vo;
 
-import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.domain.entity.Plan;
-import com.posicube.assignment.users.exception.TokenExceptionStatus;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,13 +30,11 @@ public class Tokens {
         return new Tokens(plan.getType().getQuota());
     }
 
-    public Tokens use(long tokensToUse) {
-        if (this.remainingTokens < tokensToUse) {
-            throw new BaseException(TokenExceptionStatus.INSUFFICIENT_TOKENS);
+    public void deduct(long amountToUse) {
+        usedTokens += amountToUse;
+        remainingTokens -= amountToUse;
+        if (remainingTokens < 0) {
+            remainingTokens = 0;
         }
-
-        long newUsedTokens = usedTokens + tokensToUse;
-        long newRemainingTokens = remainingTokens - tokensToUse;
-        return new Tokens(quota, newUsedTokens, newRemainingTokens);
     }
 }

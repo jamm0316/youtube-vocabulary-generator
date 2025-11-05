@@ -3,6 +3,7 @@ package com.posicube.assignment.users.domain.entity;
 import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.domain.entity.Plan;
 import com.posicube.assignment.users.domain.vo.Tokens;
+import com.posicube.assignment.users.exception.TokenExceptionStatus;
 import com.posicube.assignment.users.exception.UserExceptionStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -78,5 +79,15 @@ public class Users {
 
     static public Users create(String account, String password, String name, Plan plan) {
         return new Users(account, password, name, plan);
+    }
+
+    public void validateQueryPermission() {
+        if (this.tokens.getRemainingTokens() <= 0) {
+            throw new BaseException(TokenExceptionStatus.INSUFFICIENT_TOKENS);
+        }
+    }
+
+    public void useTokens(long amountToUse) {
+        this.tokens.deduct(amountToUse);
     }
 }

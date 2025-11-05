@@ -1,7 +1,10 @@
 package com.posicube.assignment;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Random;
 
+@Component
 public class LlmClient {
     private final Random random = new Random();
 
