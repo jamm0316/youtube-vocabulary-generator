@@ -7,8 +7,8 @@ import com.posicube.assignment.plan.domain.entity.Plan;
 import com.posicube.assignment.plan.domain.vo.PlanType;
 import com.posicube.assignment.querylog.application.QueryLogService;
 import com.posicube.assignment.querylog.application.RateLimiter;
-import com.posicube.assignment.querylog.domain.port.QueryLogRepository;
 import com.posicube.assignment.querylog.domain.QueryLog;
+import com.posicube.assignment.querylog.domain.port.QueryLogRepository;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
 import com.posicube.assignment.querylog.presentation.dtos.QueryRequest;
 import com.posicube.assignment.querylog.presentation.dtos.QueryResponse;
@@ -28,7 +28,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -102,6 +102,7 @@ public class QueryLogServiceTest {
         when(userRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(rateLimiter.isAllowed(1L)).thenReturn(true);
         when(llmClient.query(anyString(), anyString())).thenReturn("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
+        when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         //when
         QueryResponse response = queryService.submitQuery(1L, mockRequest);
@@ -118,18 +119,19 @@ public class QueryLogServiceTest {
         Tokens tokenMock = mock(Tokens.class);
         when(tokenMock.getRemainingTokens()).thenReturn(1000L);
         ReflectionTestUtils.setField(mockUser, "tokens", tokenMock);
-        doNothing().when(mockUser).useTokens(anyLong());
 
         when(userRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(rateLimiter.isAllowed(1L)).thenReturn(true);
         when(llmClient.query(anyString(), anyString())).thenReturn("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
+        when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         long expectedUsedTokens = new TokenCalculator().calculateTokensFromPrompt(mockRequest.q());
         when(tokenCalculator.calculateTokensFromPrompt(mockRequest.q())).thenReturn(expectedUsedTokens);
         //when
-        queryService.submitQuery(1L, mockRequest);
+        QueryResponse response = queryService.submitQuery(1L, mockRequest);
 
         //then
+        assertThat(response.answer()).isEqualTo("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
         verify(mockUser, times(1)).useTokens(expectedUsedTokens);
         verify(queryLogRepository, times(1)).save(any(QueryLog.class));
     }
@@ -141,11 +143,11 @@ public class QueryLogServiceTest {
         Tokens lastTokens = mock(Tokens.class);
         when(lastTokens.getRemainingTokens()).thenReturn(5L);
         ReflectionTestUtils.setField(mockUser, "tokens", lastTokens);
-        doNothing().when(mockUser).useTokens(anyLong());
 
         when(userRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(rateLimiter.isAllowed(1L)).thenReturn(true);
         when(llmClient.query(anyString(), anyString())).thenReturn("i".repeat(50));
+        when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         long expectedTokens = tokenCalculator.calculateTokensFromPrompt(mockRequest.q());
         when(tokenCalculator.calculateTokensFromPrompt(mockRequest.q())).thenReturn(expectedTokens);
