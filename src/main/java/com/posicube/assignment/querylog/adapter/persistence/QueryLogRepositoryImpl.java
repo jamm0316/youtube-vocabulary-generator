@@ -1,7 +1,7 @@
 package com.posicube.assignment.querylog.adapter.persistence;
 
 import com.posicube.assignment.querylog.domain.port.QueryLogRepository;
-import com.posicube.assignment.querylog.domain.vo.QueryLog;
+import com.posicube.assignment.querylog.domain.QueryLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
