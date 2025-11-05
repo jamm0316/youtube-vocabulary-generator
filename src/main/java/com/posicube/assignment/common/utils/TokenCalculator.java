@@ -13,9 +13,9 @@ public class TokenCalculator {
      * @param prompt 토큰 수를 계산할 프롬프트 문자열
      * @return 계산된 토큰 수
      */
-    public long calculateTokensFromPrompt(String prompt) {
+    public Long calculateTokensFromPrompt(String prompt) {
         if (prompt == null || prompt.isEmpty()) {
-            return 0;
+            return 0L;
         }
         return Math.round(prompt.trim().length() * CHARS_TO_TOKENS_RATIO);
     }
