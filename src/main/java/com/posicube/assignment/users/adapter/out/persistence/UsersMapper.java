@@ -1,9 +1,7 @@
 package com.posicube.assignment.users.adapter.out.persistence;
 
 import com.posicube.assignment.plan.adapter.out.persistence.PlanJpaEntity;
-import com.posicube.assignment.users.domain.model.Tokens;
 import com.posicube.assignment.users.domain.model.Users;
-import jakarta.persistence.*;
 import org.springframework.stereotype.Component;
 
 @Component

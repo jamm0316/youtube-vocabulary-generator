@@ -1,10 +1,7 @@
 package com.posicube.assignment.plan.adapter.out.persistence;
 
 import com.posicube.assignment.plan.domain.model.Plan;
-import com.posicube.assignment.plan.domain.model.PlanType;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 @Component
 public class PlanMapper {

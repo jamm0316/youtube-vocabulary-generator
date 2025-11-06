@@ -1,10 +1,9 @@
 package com.posicube.assignment.users.adapter.in.web;
 
 import com.posicube.assignment.common.baseResponse.BaseResponse;
-import com.posicube.assignment.users.application.service.UsersService;
-import com.posicube.assignment.users.adapter.out.persistence.UsersJpaEntity;
 import com.posicube.assignment.users.application.commandquery.UserCreateRequest;
 import com.posicube.assignment.users.application.commandquery.UserInfoResponse;
+import com.posicube.assignment.users.application.service.UsersService;
 import com.posicube.assignment.users.domain.model.Users;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
