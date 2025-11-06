@@ -17,14 +17,14 @@ import java.util.Objects;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class QueryLog {
-    final private Long id;
-    final private Long userId;
-    final private ModelType type;
-    final private String content;
-    final private String answer;
-    final private Long usedTokens;
-    final private BigDecimal cost;
-    final private LocalDateTime createAt;
+    private final Long id;
+    private final Long userId;
+    private final ModelType type;
+    private final String content;
+    private final String answer;
+    private final Long usedTokens;
+    private final BigDecimal cost;
+    private final LocalDateTime createAt;
 
     private static final int MAX_QUERY_LENGTH = 800;
     private static final BigDecimal THOUSAND = new BigDecimal("1000");
