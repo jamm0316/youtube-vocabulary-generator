@@ -1,4 +1,4 @@
-package com.posicube.assignment.querylog.application;
+package com.posicube.assignment.querylog.application.service;
 
 public interface RateLimiter {
     /**
