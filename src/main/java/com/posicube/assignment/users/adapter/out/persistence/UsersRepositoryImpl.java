@@ -9,6 +9,7 @@ import com.posicube.assignment.users.port.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -31,5 +32,10 @@ public class UsersRepositoryImpl implements UsersRepository {
     public Optional<Users> findUserById(Long id) {
         return jpaUsersRepository.findUsersById(id)
                 .map(mapper::toDomain);
+    }
+
+    @Override
+    public List<UserTokenResetDto> findAllFotTokenReset() {
+        return jpaUsersRepository.findAllFotTokenReset();
     }
 }
