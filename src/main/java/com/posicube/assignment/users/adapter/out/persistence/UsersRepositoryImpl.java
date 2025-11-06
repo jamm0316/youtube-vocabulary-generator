@@ -4,11 +4,13 @@ import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.adapter.out.persistence.PlanJpaEntity;
 import com.posicube.assignment.plan.adapter.out.persistence.SpringDataJpaPlanRepository;
 import com.posicube.assignment.plan.exception.PlanExceptionStatus;
+import com.posicube.assignment.users.application.commandquery.UserInfoResponse;
 import com.posicube.assignment.users.domain.model.Users;
 import com.posicube.assignment.users.port.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -36,5 +38,9 @@ public class UsersRepositoryImpl implements UsersRepository {
     @Override
     public int resetAllUserTokens() {
         return jpaUsersRepository.resetAllUserTokens();
+    }
+
+    public List<UserInfoResponse> findAllUsersInfo() {
+        return jpaUsersRepository.findAllUsersInfo();
     }
 }
