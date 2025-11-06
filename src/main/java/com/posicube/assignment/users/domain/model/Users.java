@@ -5,16 +5,12 @@ import com.posicube.assignment.plan.domain.model.Plan;
 import com.posicube.assignment.plan.domain.model.PlanType;
 import com.posicube.assignment.users.exception.TokenExceptionStatus;
 import com.posicube.assignment.users.exception.UserExceptionStatus;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Objects;
 
 @Getter
-@Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Users {
     private final Long id;
     private final PlanType planType;
@@ -23,21 +19,28 @@ public class Users {
     private final String name;
     private final Tokens tokens;
 
+    //1. 생성 전용 메서드: Service 계층에서 새로운 Users 만들때 사용
     static public Users create(String account, String password, String name, Plan plan) {
-        Tokens tokens = Tokens.initialOf(plan);
-        validateUserInvariants(account, password, name, tokens);
-        return Users.builder()
-                .planType(plan.getType())
-                .account(account)
-                .password(password)
-                .name(name)
-                .tokens(tokens)
-                .build();
+        Tokens initialledToken = Tokens.initialOf(plan);
+        return new Users(null, plan.getType(), account, password, name, initialledToken);
+    }
+
+    //2. 재구성 전용 builder: JPA Entity -> Domain 변환 시 사용
+    @Builder(builderMethodName = "fromPersistenceBuilder")
+    private Users(Long id, PlanType planType, String account, String password, String name, Tokens tokens) {
+        this.id = id;
+        this.planType = planType;
+        this.account = account;
+        this.password = password;
+        this.name = name;
+        this.tokens = tokens;
     }
 
     private static void validateUserInvariants(String account, String password, String name, Tokens tokens) {
-        if (account == null || account.trim().isEmpty()) throw new BaseException(UserExceptionStatus.ACCOUNT_CANNOT_BE_NULL);
-        if (password == null || password.trim().isEmpty()) throw new BaseException(UserExceptionStatus.PASSWORD_CANNOT_BE_NULL);
+        if (account == null || account.trim().isEmpty())
+            throw new BaseException(UserExceptionStatus.ACCOUNT_CANNOT_BE_NULL);
+        if (password == null || password.trim().isEmpty())
+            throw new BaseException(UserExceptionStatus.PASSWORD_CANNOT_BE_NULL);
         if (name == null || name.trim().isEmpty()) throw new BaseException(UserExceptionStatus.NAME_CANNOT_BE_NULL);
         if (account.contains(" ")) throw new BaseException(UserExceptionStatus.ACCOUNT_CANNOT_CONTAIN_WHITESPACE);
         if (password.contains(" ")) throw new BaseException(UserExceptionStatus.PASSWORD_CANNOT_CONTAIN_WHITESPACE);
@@ -51,7 +54,15 @@ public class Users {
         }
     }
 
-    public void useTokens(long amountToUse) {
-        this.tokens.deduct(amountToUse);
+    public Users useTokens(long amountToUse) {
+        Tokens newTokens = this.tokens.deduct(amountToUse);
+        return new Users(
+                this.id,
+                this.planType,
+                this.account,
+                this.password,
+                this.name,
+                newTokens
+        );
     }
 }
