@@ -7,6 +7,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -20,10 +22,8 @@ public class TokenResetScheduler {
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
     public void resetAllUserTokens() {
-        try {
-            usersRepository.resetAllUserTokens();
-        } catch (Exception e) {
-            throw e;
-        }
+        log.info("토큰 리셋 시작: {}", LocalDateTime.now());
+        int resetAllUsers = usersRepository.resetAllUserTokens();
+        log.info("토큰 리셋 완료된 사용자 수: {}", resetAllUsers);
     }
 }
