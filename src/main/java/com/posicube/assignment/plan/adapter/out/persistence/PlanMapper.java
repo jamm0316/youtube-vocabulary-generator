@@ -8,7 +8,7 @@ public class PlanMapper {
 
     //JPA Entity -> Domain Model
     public Plan toDomain(PlanJpaEntity entity) {
-        return Plan.builder()
+        return Plan.fromPersistenceBuilder()
                 .type(entity.getType())
                 .updateAt(entity.getUpdateAt())
                 .build();
