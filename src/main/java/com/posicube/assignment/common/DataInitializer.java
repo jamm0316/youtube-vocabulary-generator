@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DataInitializer implements ApplicationRunner {
     private final PlanRepository planRepository;
-    private final PlanMapper mapper;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         try {
