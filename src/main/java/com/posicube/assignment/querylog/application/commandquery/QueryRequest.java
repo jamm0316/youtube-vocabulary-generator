@@ -1,4 +1,4 @@
-package com.posicube.assignment.querylog.presentation.dtos;
+package com.posicube.assignment.querylog.application.commandquery;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
