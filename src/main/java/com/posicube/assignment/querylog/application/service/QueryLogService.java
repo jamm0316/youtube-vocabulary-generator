@@ -1,16 +1,16 @@
-package com.posicube.assignment.querylog.application;
+package com.posicube.assignment.querylog.application.service;
 
 import com.posicube.assignment.LlmClient;
 import com.posicube.assignment.common.exception.BaseException;
-import com.posicube.assignment.common.utils.TokenCalculator;
-import com.posicube.assignment.querylog.domain.vo.ModelType;
-import com.posicube.assignment.querylog.domain.port.QueryLogRepository;
-import com.posicube.assignment.querylog.domain.QueryLog;
+import com.posicube.assignment.querylog.domain.model.QueryLog;
+import com.posicube.assignment.querylog.domain.policy.TokenCalculator;
+import com.posicube.assignment.querylog.domain.model.ModelType;
+import com.posicube.assignment.querylog.port.out.QueryLogRepository;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
-import com.posicube.assignment.querylog.presentation.dtos.QueryRequest;
-import com.posicube.assignment.querylog.presentation.dtos.QueryResponse;
-import com.posicube.assignment.users.domain.entity.Users;
-import com.posicube.assignment.users.domain.port.UserRepository;
+import com.posicube.assignment.querylog.application.commandquery.QueryRequest;
+import com.posicube.assignment.querylog.application.commandquery.QueryResponse;
+import com.posicube.assignment.users.domain.model.Users;
+import com.posicube.assignment.users.port.UsersRepository;
 import com.posicube.assignment.users.exception.UserExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,16 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class QueryLogService {
-    private final UserRepository userRepository;
+    private final QueryLogRepository queryLogRepository;
+    private final UsersRepository usersRepository;
     private final RateLimiter rateLimiter;
     private final LlmClient llmClient;
     private final TokenCalculator tokenCalculator;
-    private final QueryLogRepository queryLogRepository;
 
     @Transactional
     public QueryResponse submitQuery(Long userId, QueryRequest request) {
         //1. 사용자 조회
-        Users user = userRepository.findUserById(userId)
+        Users user = usersRepository.findUserById(userId)
                 .orElseThrow(() -> new BaseException(UserExceptionStatus.USER_NOT_FOUND));
 
         //2. Rate Limit 검증
@@ -49,13 +49,16 @@ public class QueryLogService {
             throw new BaseException(QueryLogExceptionStatus.LLM_API_ERROR);
         }
 
-        //토큰 사용
+        //5. 토큰 사용
         user.useTokens(usedTokens);
+
+        //6. 변경된 도메인 객체를 Repository에 전달하여 저장(더티체킹x)
+        Users updatedUser = usersRepository.save(user);
 
         //6. queryLog 저장
         QueryLog queryLog = QueryLog.create(user, request.q(), ModelType.from(request.model()), answer, usedTokens);
-        QueryLog save = queryLogRepository.save(queryLog);
+        QueryLog saveQuery = queryLogRepository.save(queryLog);
 
-        return QueryResponse.from(save);
+        return QueryResponse.of(saveQuery, updatedUser);
     }
 }

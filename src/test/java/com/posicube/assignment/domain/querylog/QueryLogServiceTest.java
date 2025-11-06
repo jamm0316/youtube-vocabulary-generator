@@ -2,21 +2,21 @@ package com.posicube.assignment.domain.querylog;
 
 import com.posicube.assignment.LlmClient;
 import com.posicube.assignment.common.exception.BaseException;
-import com.posicube.assignment.common.utils.TokenCalculator;
-import com.posicube.assignment.plan.domain.entity.Plan;
-import com.posicube.assignment.plan.domain.vo.PlanType;
-import com.posicube.assignment.querylog.application.QueryLogService;
-import com.posicube.assignment.querylog.application.RateLimiter;
-import com.posicube.assignment.querylog.domain.QueryLog;
-import com.posicube.assignment.querylog.domain.port.QueryLogRepository;
+import com.posicube.assignment.plan.domain.model.Plan;
+import com.posicube.assignment.plan.domain.model.PlanType;
+import com.posicube.assignment.querylog.application.commandquery.QueryRequest;
+import com.posicube.assignment.querylog.application.commandquery.QueryResponse;
+import com.posicube.assignment.querylog.application.service.QueryLogService;
+import com.posicube.assignment.querylog.application.service.RateLimiter;
+import com.posicube.assignment.querylog.domain.model.QueryLog;
+import com.posicube.assignment.querylog.domain.policy.TokenCalculator;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
-import com.posicube.assignment.querylog.presentation.dtos.QueryRequest;
-import com.posicube.assignment.querylog.presentation.dtos.QueryResponse;
-import com.posicube.assignment.users.domain.entity.Users;
-import com.posicube.assignment.users.domain.port.UserRepository;
-import com.posicube.assignment.users.domain.vo.Tokens;
+import com.posicube.assignment.querylog.port.out.QueryLogRepository;
+import com.posicube.assignment.users.domain.model.Tokens;
+import com.posicube.assignment.users.domain.model.Users;
 import com.posicube.assignment.users.exception.TokenExceptionStatus;
 import com.posicube.assignment.users.exception.UserExceptionStatus;
+import com.posicube.assignment.users.port.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,14 +28,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class QueryLogServiceTest {
-    @Mock UserRepository userRepository;
+    @Mock UsersRepository usersRepository;
     @Mock QueryLogRepository queryLogRepository;
     @Mock LlmClient llmClient;
     @Mock RateLimiter rateLimiter;
@@ -56,7 +55,7 @@ public class QueryLogServiceTest {
     @DisplayName("submitQuery: 사용자 조회 실패: 존재하지 않는 사용자면 예외를 던진다.")
     public void submitQuery_userNotFound_fail() throws Exception {
         //given
-        when(userRepository.findUserById(anyLong())).thenReturn(Optional.empty());
+        when(usersRepository.findUserById(anyLong())).thenReturn(Optional.empty());
 
         //when&then
         assertThatThrownBy(() -> queryService.submitQuery(1L, mockRequest))
@@ -68,7 +67,7 @@ public class QueryLogServiceTest {
     @DisplayName("submitQuery: Rate Limit를 초과하면 예외를 던진다.")
     public void submitQuery_rateLimit_fail() throws Exception {
         //given
-        when(userRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
+        when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(rateLimiter.isAllowed(1L)).thenReturn(false);
 
         //when&then
@@ -86,7 +85,7 @@ public class QueryLogServiceTest {
 
         ReflectionTestUtils.setField(mockUser, "tokens", zeroToken);
 
-        when(userRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
+        when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(rateLimiter.isAllowed(1L)).thenReturn(true);
 
         //then
@@ -99,10 +98,12 @@ public class QueryLogServiceTest {
     @DisplayName("정상 요청 시 LlmClient에서 응답")
     public void submitQuery_llmClientResponse_success() throws Exception {
         //given
-        when(userRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
+        when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(rateLimiter.isAllowed(1L)).thenReturn(true);
         when(llmClient.query(anyString(), anyString())).thenReturn("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
         when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         //when
         QueryResponse response = queryService.submitQuery(1L, mockRequest);
@@ -120,13 +121,16 @@ public class QueryLogServiceTest {
         when(tokenMock.getRemainingTokens()).thenReturn(1000L);
         ReflectionTestUtils.setField(mockUser, "tokens", tokenMock);
 
-        when(userRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
+        when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(rateLimiter.isAllowed(1L)).thenReturn(true);
         when(llmClient.query(anyString(), anyString())).thenReturn("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
         when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         long expectedUsedTokens = new TokenCalculator().calculateTokensFromPrompt(mockRequest.q());
         when(tokenCalculator.calculateTokensFromPrompt(mockRequest.q())).thenReturn(expectedUsedTokens);
+
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         //when
         QueryResponse response = queryService.submitQuery(1L, mockRequest);
 
@@ -144,13 +148,15 @@ public class QueryLogServiceTest {
         when(lastTokens.getRemainingTokens()).thenReturn(5L);
         ReflectionTestUtils.setField(mockUser, "tokens", lastTokens);
 
-        when(userRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
+        when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(rateLimiter.isAllowed(1L)).thenReturn(true);
         when(llmClient.query(anyString(), anyString())).thenReturn("i".repeat(50));
         when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         long expectedTokens = tokenCalculator.calculateTokensFromPrompt(mockRequest.q());
         when(tokenCalculator.calculateTokensFromPrompt(mockRequest.q())).thenReturn(expectedTokens);
+
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         //when
         QueryResponse response = queryService.submitQuery(1L, mockRequest);
@@ -169,7 +175,7 @@ public class QueryLogServiceTest {
         when(tokensMock.getRemainingTokens()).thenReturn(10000L);
         ReflectionTestUtils.setField(mockUser, "tokens", tokensMock);
 
-        when(userRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
+        when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(rateLimiter.isAllowed(1L)).thenReturn(true);
 
         long expectedTokens = tokenCalculator.calculateTokensFromPrompt(mockRequest.q());
