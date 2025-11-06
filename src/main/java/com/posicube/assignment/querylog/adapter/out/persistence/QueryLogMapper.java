@@ -16,7 +16,6 @@ public class QueryLogMapper {
                 .content(entity.getContent())
                 .answer(entity.getAnswer())
                 .usedTokens(entity.getUsedTokens())
-                .cost(entity.getCost())
                 .createAt(entity.getCreateAt())
                 .build();
     }
@@ -30,7 +29,6 @@ public class QueryLogMapper {
                 .content(domain.getContent())
                 .answer(domain.getAnswer())
                 .usedTokens(domain.getUsedTokens())
-                .cost(domain.getCost())
                 .createAt(domain.getCreateAt())
                 .build();
     }
