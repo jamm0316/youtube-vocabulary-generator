@@ -36,9 +36,9 @@ public class TokenResetSchedulerTest {
 
         //when
         List<UserInfoResponse> allUsersInfo = usersService.findAllUsersInfo();
-        assertThat(allUsersInfo.size()).isEqualTo(2);
 
         //then
+        assertThat(allUsersInfo.size()).isEqualTo(2);
         allUsersInfo.forEach(user -> {
             if (user.plan().equals(PlanType.LITE)) {
                 assertThat(user.tokens().getRemainingTokens()).isEqualTo(PlanType.LITE.getQuota());
