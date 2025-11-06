@@ -3,8 +3,6 @@ package com.posicube.assignment.querylog.domain.model;
 import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
 import com.posicube.assignment.users.domain.model.Users;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,8 +12,6 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
-@Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class QueryLog {
     private final Long id;
     private final Long userId;
@@ -29,20 +25,27 @@ public class QueryLog {
     private static final int MAX_QUERY_LENGTH = 800;
     private static final BigDecimal THOUSAND = new BigDecimal("1000");
 
+    //1. 생성 전용 메서드: Service 계층에서 새로운 QueryLog 만들때 사용
     public static QueryLog create(Users users, String q, ModelType type, String answer, Long usedTokens) {
         validationQueryLogInvariants(users, q, type, answer, usedTokens);
         BigDecimal cost = calculateCost(usedTokens, type);
 
-        return QueryLog.builder()
-                .userId(users.getId())
-                .type(type)
-                .content(q.trim())
-                .answer(answer)
-                .usedTokens(usedTokens)
-                .cost(cost)
-                .createAt(LocalDateTime.now())
-                .build();
+        return new QueryLog(null, users.getId(), type, q.trim(), answer, usedTokens, cost, LocalDateTime.now());
     }
+
+    //2. 재구성 전용 builder: JPA Entity -> Domain 변환 시 사용
+    @Builder(builderMethodName = "fromPersistenceBuilder")
+    private QueryLog (Long id, Long userId, ModelType type, String content, String answer, Long usedTokens, BigDecimal cost, LocalDateTime createAt) {
+        this.id = id;
+        this.userId = userId;
+        this.type = type;
+        this.content = content;
+        this.answer = answer;
+        this.usedTokens = usedTokens;
+        this.cost = cost;
+        this.createAt = createAt;
+    }
+
 
     private static void validationQueryLogInvariants(Users user, String q, ModelType type, String answer, Long usedTokens) {
         if (Objects.isNull(user)) throw new BaseException(QueryLogExceptionStatus.USER_CANNOT_BE_NULL);

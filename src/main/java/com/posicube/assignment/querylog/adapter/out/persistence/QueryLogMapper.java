@@ -9,7 +9,7 @@ public class QueryLogMapper {
 
     //JPA Entity -> Domain Model
     public QueryLog toDomain(QueryLogJpaEntity entity) {
-        return QueryLog.builder()
+        return QueryLog.fromPersistenceBuilder()
                 .id(entity.getId())
                 .userId(entity.getUser().getId())
                 .type(entity.getType())
