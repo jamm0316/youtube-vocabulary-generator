@@ -1,8 +1,8 @@
 package com.posicube.assignment.common;
 
-import com.posicube.assignment.plan.domain.entity.Plan;
-import com.posicube.assignment.plan.domain.port.PlanRepository;
-import com.posicube.assignment.plan.domain.vo.PlanType;
+import com.posicube.assignment.plan.domain.model.Plan;
+import com.posicube.assignment.plan.domain.model.PlanType;
+import com.posicube.assignment.plan.port.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;

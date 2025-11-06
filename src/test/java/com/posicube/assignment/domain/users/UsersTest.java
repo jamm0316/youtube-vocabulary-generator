@@ -1,9 +1,9 @@
 package com.posicube.assignment.domain.users;
 
 import com.posicube.assignment.common.exception.BaseException;
-import com.posicube.assignment.plan.domain.entity.Plan;
-import com.posicube.assignment.plan.domain.vo.PlanType;
-import com.posicube.assignment.users.domain.entity.Users;
+import com.posicube.assignment.plan.domain.model.Plan;
+import com.posicube.assignment.plan.domain.model.PlanType;
+import com.posicube.assignment.users.domain.model.Users;
 import com.posicube.assignment.users.exception.UserExceptionStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ public class UsersTest {
         assertThat(user.getAccount()).isEqualTo("evanbackeng@gmail.com");
         assertThat(user.getPassword()).isEqualTo("pass1234");
         assertThat(user.getName()).isEqualTo("evan");
-        assertThat(user.getPlan().getType()).isEqualTo(PlanType.LITE);
+        assertThat(user.getPlanType()).isEqualTo(PlanType.LITE);
         assertThat(user.getTokens().getQuota()).isEqualTo(PlanType.LITE.getQuota());
         assertThat(user.getTokens().getRemainingTokens()).isEqualTo(PlanType.LITE.getQuota());
     }
