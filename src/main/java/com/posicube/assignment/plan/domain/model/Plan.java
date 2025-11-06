@@ -1,26 +1,25 @@
-package com.posicube.assignment.plan.domain.entity;
+package com.posicube.assignment.plan.domain.model;
 
 import com.posicube.assignment.common.exception.BaseException;
-import com.posicube.assignment.plan.domain.vo.PlanType;
 import com.posicube.assignment.plan.exception.PlanExceptionStatus;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class Plan {
-    @Id
-    @Enumerated(EnumType.STRING)
     private PlanType type;  //사용자 요금제
+    private LocalDateTime updateAt;
 
     private Plan(PlanType type) {
         validatePlanInvariants(type);
         this.type = type;
+        this.updateAt = LocalDateTime.now();
     }
 
     private void validatePlanInvariants(PlanType type) {
@@ -43,5 +42,6 @@ public class Plan {
         }
 
         this.type = newType;
+        this.updateAt = LocalDateTime.now();
     }
 }
