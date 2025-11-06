@@ -16,55 +16,33 @@ import java.util.Objects;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Users {
-    private long id;
+    private final Long id;
     private final PlanType planType;
     private final String account;
     private final String password;
     private final String name;
     private final Tokens tokens;
 
-    private Users(Plan plan, String account, String password, String name) {
-        this.planType = plan.getType();
+    static public Users create(String account, String password, String name, Plan plan) {
         Tokens tokens = Tokens.initialOf(plan);
         validateUserInvariants(account, password, name, tokens);
-        this.account = account.trim();
-        this.password = password.trim();
-        this.name = name.trim();
-        this.tokens = tokens;
+        return Users.builder()
+                .planType(plan.getType())
+                .account(account)
+                .password(password)
+                .name(name)
+                .tokens(tokens)
+                .build();
     }
 
-    private void validateUserInvariants(String account, String password, String name, Tokens tokens) {
-        if (account == null || account.trim().isEmpty()) {
-            throw new BaseException(UserExceptionStatus.ACCOUNT_CANNOT_BE_NULL);
-        }
-
-        if (password == null || password.trim().isEmpty()) {
-            throw new BaseException(UserExceptionStatus.PASSWORD_CANNOT_BE_NULL);
-        }
-
-        if (name == null || name.trim().isEmpty()) {
-            throw new BaseException(UserExceptionStatus.NAME_CANNOT_BE_NULL);
-        }
-
-        if (account.contains(" ")) {
-            throw new BaseException(UserExceptionStatus.ACCOUNT_CANNOT_CONTAIN_WHITESPACE);
-        }
-
-        if (password.contains(" ")) {
-            throw new BaseException(UserExceptionStatus.PASSWORD_CANNOT_CONTAIN_WHITESPACE);
-        }
-
-        if (name.contains(" ")) {
-            throw new BaseException(UserExceptionStatus.NAME_CANNOT_CONTAIN_WHITESPACE);
-        }
-
-        if (Objects.isNull(tokens)) {
-            throw new BaseException(UserExceptionStatus.TOKEN_CANNOT_NULL);
-        }
-    }
-
-    static public Users create(String account, String password, String name, Plan plan) {
-        return new Users(plan, account, password, name);
+    private static void validateUserInvariants(String account, String password, String name, Tokens tokens) {
+        if (account == null || account.trim().isEmpty()) throw new BaseException(UserExceptionStatus.ACCOUNT_CANNOT_BE_NULL);
+        if (password == null || password.trim().isEmpty()) throw new BaseException(UserExceptionStatus.PASSWORD_CANNOT_BE_NULL);
+        if (name == null || name.trim().isEmpty()) throw new BaseException(UserExceptionStatus.NAME_CANNOT_BE_NULL);
+        if (account.contains(" ")) throw new BaseException(UserExceptionStatus.ACCOUNT_CANNOT_CONTAIN_WHITESPACE);
+        if (password.contains(" ")) throw new BaseException(UserExceptionStatus.PASSWORD_CANNOT_CONTAIN_WHITESPACE);
+        if (name.contains(" ")) throw new BaseException(UserExceptionStatus.NAME_CANNOT_CONTAIN_WHITESPACE);
+        if (Objects.isNull(tokens)) throw new BaseException(UserExceptionStatus.TOKEN_CANNOT_NULL);
     }
 
     public void validateQueryPermission() {
