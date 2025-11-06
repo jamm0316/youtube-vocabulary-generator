@@ -22,10 +22,10 @@ public class QueryLogMapper {
     }
 
     //Domain Model -> JPA Entity
-    public QueryLogJpaEntity toEntity(QueryLog domain, UsersJpaEntity usersJpaEntityEntity) {
+    public QueryLogJpaEntity toEntity(QueryLog domain, UsersJpaEntity usersJpaEntity) {
         return QueryLogJpaEntity.builder()
                 .id(domain.getId())
-                .user(usersJpaEntityEntity)
+                .user(usersJpaEntity)
                 .type(domain.getType())
                 .content(domain.getContent())
                 .answer(domain.getAnswer())
