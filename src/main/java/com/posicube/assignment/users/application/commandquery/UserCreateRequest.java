@@ -1,4 +1,4 @@
-package com.posicube.assignment.users.presentation.dtos;
+package com.posicube.assignment.users.application.commandquery;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
