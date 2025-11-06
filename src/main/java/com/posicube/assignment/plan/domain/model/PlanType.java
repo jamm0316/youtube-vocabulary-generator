@@ -1,4 +1,4 @@
-package com.posicube.assignment.plan.domain.vo;
+package com.posicube.assignment.plan.domain.model;
 
 import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.exception.PlanExceptionStatus;
