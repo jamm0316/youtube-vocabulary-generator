@@ -1,6 +1,7 @@
 package com.posicube.assignment.users.application.service;
 
 import com.posicube.assignment.users.adapter.out.persistence.SpringDataJpaUsersRepository;
+import com.posicube.assignment.users.port.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class TokenResetScheduler {
-    private final SpringDataJpaUsersRepository springDataJpaUsersRepository;
+    private final UsersRepository usersRepository;
 
     /**
      * 매일 자정(00:00)에 모든 사용자의 토큰 사용량을 초기화합니다.
@@ -23,7 +24,7 @@ public class TokenResetScheduler {
     @Transactional
     public void resetAllUserTokens() {
         try {
-            springDataJpaUsersRepository.resetAllUserTokens();
+            usersRepository.resetAllUserTokens();
         } catch (Exception e) {
             throw e;
         }
