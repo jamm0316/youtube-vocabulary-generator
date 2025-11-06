@@ -7,6 +7,7 @@ import com.posicube.assignment.plan.domain.model.PlanType;
 import com.posicube.assignment.querylog.domain.model.QueryLog;
 import com.posicube.assignment.querylog.port.out.QueryLogRepository;
 import com.posicube.assignment.users.application.commandquery.UsageResponse;
+import com.posicube.assignment.users.application.commandquery.UserInfoResponse;
 import com.posicube.assignment.users.domain.model.Users;
 import com.posicube.assignment.users.domain.policy.UsageCalculator;
 import com.posicube.assignment.users.domain.policy.UsageSummary;
@@ -45,11 +46,12 @@ public class UsersService {
     public UsageResponse getUserUsage(Long userId) {
         Users user = usersRepository.findUserById(userId)
                 .orElseThrow(() -> new BaseException(UserExceptionStatus.USER_NOT_FOUND));
-
         List<QueryLog> queryLogs = queryLogRepository.findAllByUserId(userId);
-
         UsageSummary usageSummary = usageCalculator.calculate(user, queryLogs);
-
         return UsageResponse.from(usageSummary);
+    }
+
+    public List<UserInfoResponse> findAllUsersInfo() {
+        return usersRepository.findAllUsersInfo();
     }
 }
