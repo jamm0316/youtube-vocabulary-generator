@@ -40,6 +40,7 @@ public class UsersRepositoryImpl implements UsersRepository {
         return jpaUsersRepository.resetAllUserTokens();
     }
 
+    @Override
     public List<UserInfoResponse> findAllUsersInfo() {
         return jpaUsersRepository.findAllUsersInfo();
     }
