@@ -2,7 +2,6 @@ package com.posicube.assignment.plan.domain.model;
 
 import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.exception.PlanExceptionStatus;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 

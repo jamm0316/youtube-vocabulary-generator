@@ -1,7 +1,6 @@
 package com.posicube.assignment.users.adapter.out.persistence;
 
 import com.posicube.assignment.plan.adapter.out.persistence.PlanJpaEntity;
-import com.posicube.assignment.users.domain.model.Tokens;
 import jakarta.persistence.*;
 import lombok.*;
 
