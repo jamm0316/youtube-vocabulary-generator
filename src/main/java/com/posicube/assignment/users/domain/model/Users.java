@@ -66,16 +66,4 @@ public class Users {
                 newTokens
         );
     }
-
-    public Users resetToken() {
-        Tokens resetTokens = this.tokens.reset();
-        return new Users(
-                this.id,
-                this.planType,
-                this.account,
-                this.password,
-                this.name,
-                resetTokens
-        );
-    }
 }
