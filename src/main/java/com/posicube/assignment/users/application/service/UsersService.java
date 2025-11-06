@@ -4,21 +4,28 @@ import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.application.service.PlanService;
 import com.posicube.assignment.plan.domain.model.Plan;
 import com.posicube.assignment.plan.domain.model.PlanType;
+import com.posicube.assignment.querylog.domain.model.QueryLog;
+import com.posicube.assignment.querylog.port.out.QueryLogRepository;
+import com.posicube.assignment.users.application.commandquery.UsageResponse;
 import com.posicube.assignment.users.domain.model.Users;
+import com.posicube.assignment.users.domain.policy.UsageCalculator;
+import com.posicube.assignment.users.domain.policy.UsageSummary;
 import com.posicube.assignment.users.port.UsersRepository;
 import com.posicube.assignment.users.exception.UserExceptionStatus;
 import com.posicube.assignment.users.application.commandquery.UserCreateRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UsersService {
     private final UsersRepository usersRepository;
     private final PlanService planService;
+    private final QueryLogRepository queryLogRepository;
+    private final UsageCalculator usageCalculator;
 
     @Transactional
     public Users createUser(UserCreateRequest request) {
@@ -32,5 +39,17 @@ public class UsersService {
                 request.account(), request.password(), request.name(), plan);
 
         return usersRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UsageResponse getUserUsage(Long userId) {
+        Users user = usersRepository.findUserById(userId)
+                .orElseThrow(() -> new BaseException(UserExceptionStatus.USER_NOT_FOUND));
+
+        List<QueryLog> queryLogs = queryLogRepository.findAllByUserId(userId);
+
+        UsageSummary usageSummary = usageCalculator.calculate(user, queryLogs);
+
+        return UsageResponse.from(usageSummary);
     }
 }

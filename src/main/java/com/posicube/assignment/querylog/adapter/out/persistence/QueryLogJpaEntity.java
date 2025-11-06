@@ -7,7 +7,6 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -39,9 +38,6 @@ public class QueryLogJpaEntity {
 
     @Column(nullable = false)
     private Long usedTokens;
-
-    @Column(nullable = false, precision = 19, scale = 4)
-    private BigDecimal cost;
 
     @Column(nullable = false)
     private LocalDateTime createAt;

@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -19,7 +18,6 @@ public class QueryLog {
     private final String content;
     private final String answer;
     private final Long usedTokens;
-    private final BigDecimal cost;
     private final LocalDateTime createAt;
 
     private static final int MAX_QUERY_LENGTH = 800;
@@ -28,21 +26,19 @@ public class QueryLog {
     //1. 생성 전용 메서드: Service 계층에서 새로운 QueryLog 만들때 사용
     public static QueryLog create(Users users, String q, ModelType type, String answer, Long usedTokens) {
         validationQueryLogInvariants(users, q, type, answer, usedTokens);
-        BigDecimal cost = calculateCost(usedTokens, type);
 
-        return new QueryLog(null, users.getId(), type, q.trim(), answer, usedTokens, cost, LocalDateTime.now());
+        return new QueryLog(null, users.getId(), type, q.trim(), answer, usedTokens, LocalDateTime.now());
     }
 
     //2. 재구성 전용 builder: JPA Entity -> Domain 변환 시 사용
     @Builder(builderMethodName = "fromPersistenceBuilder")
-    private QueryLog (Long id, Long userId, ModelType type, String content, String answer, Long usedTokens, BigDecimal cost, LocalDateTime createAt) {
+    private QueryLog (Long id, Long userId, ModelType type, String content, String answer, Long usedTokens, LocalDateTime createAt) {
         this.id = id;
         this.userId = userId;
         this.type = type;
         this.content = content;
         this.answer = answer;
         this.usedTokens = usedTokens;
-        this.cost = cost;
         this.createAt = createAt;
     }
 
@@ -54,14 +50,5 @@ public class QueryLog {
         if (Objects.isNull(answer)) throw new BaseException(QueryLogExceptionStatus.ANSWER_CANNOT_BE_NULL);
         if (Objects.isNull(usedTokens)) throw new BaseException(QueryLogExceptionStatus.USED_TOKEN_CANNOT_BE_NULL);
         if (q.trim().length() > MAX_QUERY_LENGTH) throw new BaseException(QueryLogExceptionStatus.QUERY_TOO_LONG);
-    }
-
-    private static BigDecimal calculateCost(long tokens, ModelType type) {
-        BigDecimal pricePer1KToken = type.getPricePer1KToken();
-        BigDecimal tokenBigDecimal = BigDecimal.valueOf(tokens);
-
-        BigDecimal costBefoeRounding = tokenBigDecimal.divide(THOUSAND, 10, RoundingMode.HALF_UP)
-                .multiply(pricePer1KToken);
-        return costBefoeRounding.setScale(2, RoundingMode.HALF_UP);
     }
 }
