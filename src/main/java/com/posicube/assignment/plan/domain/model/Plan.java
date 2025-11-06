@@ -24,7 +24,7 @@ public class Plan {
     @Builder(builderMethodName = "fromPersistenceBuilder")
     private Plan(PlanType type, LocalDateTime updateAt) {
         this.type = type;
-        this.updateAt = LocalDateTime.now();
+        this.updateAt = updateAt;
     }
 
     static private void validatePlanInvariants(PlanType type) {

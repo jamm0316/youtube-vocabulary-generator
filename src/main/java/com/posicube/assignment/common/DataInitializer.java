@@ -1,6 +1,5 @@
 package com.posicube.assignment.common;
 
-import com.posicube.assignment.plan.adapter.out.persistence.PlanMapper;
 import com.posicube.assignment.plan.domain.model.Plan;
 import com.posicube.assignment.plan.domain.model.PlanType;
 import com.posicube.assignment.plan.port.PlanRepository;
