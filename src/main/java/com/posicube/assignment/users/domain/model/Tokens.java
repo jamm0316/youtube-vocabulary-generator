@@ -1,40 +1,26 @@
 package com.posicube.assignment.users.domain.model;
 
 import com.posicube.assignment.plan.domain.model.Plan;
-import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Tokens {
-    long quota;
-    long usedTokens;
-    long remainingTokens;
-
-    private Tokens(long quota) {
-        this.quota = quota;
-        usedTokens = 0;
-        this.remainingTokens = quota;
-    }
-
-    private Tokens(long quota, long usedTokens, long remainingTokens) {
-        this.quota = quota;
-        this.usedTokens = usedTokens;
-        this.remainingTokens = remainingTokens;
-    }
+    private final long quota;
+    private final long usedTokens;
+    private final long remainingTokens;
 
     public static Tokens initialOf(Plan plan) {
-        return new Tokens(plan.getType().getQuota());
+        return new Tokens(plan.getType().getQuota(), 0L, plan.getType().getQuota());
     }
 
-    public void deduct(long amountToUse) {
-        usedTokens += amountToUse;
-        remainingTokens -= amountToUse;
-        if (remainingTokens < 0) {
-            remainingTokens = 0;
+    public Tokens deduct(long amountToUse) {
+        long newUsedTokens = this.usedTokens + amountToUse;
+        long newRemainingTokens = this.remainingTokens - amountToUse;
+        if (newRemainingTokens < 0) {
+            newRemainingTokens = 0;
         }
+        return new Tokens(this.quota, newUsedTokens, newRemainingTokens);
     }
 }
