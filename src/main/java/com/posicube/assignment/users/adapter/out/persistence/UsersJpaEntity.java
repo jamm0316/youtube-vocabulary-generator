@@ -30,6 +30,12 @@ public class UsersJpaEntity {
     @Column(nullable = false, length = 30)
     private String name;
 
-    @Embedded
-    private Tokens tokens;
+    @Column(nullable = false)
+    private long quota;
+
+    @Column(nullable = false)
+    private long usedTokens;
+
+    @Column(nullable = false)
+    private long remainingTokens;
 }
