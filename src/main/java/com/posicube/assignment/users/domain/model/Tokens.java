@@ -23,8 +23,4 @@ public class Tokens {
         }
         return new Tokens(this.quota, newUsedTokens, newRemainingTokens);
     }
-
-    public Tokens reset() {
-        return new Tokens(this.quota, 0L, this.quota);
-    }
 }
