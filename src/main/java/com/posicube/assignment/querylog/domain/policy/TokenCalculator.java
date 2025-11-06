@@ -1,4 +1,4 @@
-package com.posicube.assignment.common.utils;
+package com.posicube.assignment.querylog.domain.policy;
 
 import org.springframework.stereotype.Component;
 
