@@ -22,6 +22,7 @@ public class Users {
     //1. 생성 전용 메서드: Service 계층에서 새로운 Users 만들때 사용
     static public Users create(String account, String password, String name, Plan plan) {
         Tokens initialledToken = Tokens.initialOf(plan);
+        validateUserInvariants(account, password, name, initialledToken);
         return new Users(null, plan.getType(), account, password, name, initialledToken);
     }
 
