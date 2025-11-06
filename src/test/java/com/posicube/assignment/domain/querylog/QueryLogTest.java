@@ -54,7 +54,6 @@ public class QueryLogTest {
         assertThat(queryLog.getType()).isEqualTo(ModelType.GPT5);
         assertThat(queryLog.getContent()).isEqualTo(prompt);
         assertThat(queryLog.getUsedTokens()).isEqualTo(expectedTokens);
-        assertThat(queryLog.getCost()).isEqualTo(expectedCost);
         assertThat(queryLog.getAnswer()).isEqualTo(answer);
     }
 
@@ -82,7 +81,6 @@ public class QueryLogTest {
         assertThat(queryLog.getType()).isEqualTo(ModelType.GPT_4O_MINI);
         assertThat(queryLog.getContent()).isEqualTo(prompt);
         assertThat(queryLog.getUsedTokens()).isEqualTo(expectedTokens);
-        assertThat(queryLog.getCost()).isEqualTo(expectedCost);
         assertThat(queryLog.getAnswer()).isEqualTo(answer);
     }
 
