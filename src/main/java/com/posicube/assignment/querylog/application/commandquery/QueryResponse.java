@@ -12,7 +12,9 @@ public record QueryResponse (
 ) {
     /**
      * 도메인 객체들로 부터 QueryResponse DTO를 생성합니다.
-     * @
+     * @param queryLog 답변을 담은 QueryLog 정보
+     * @param users 요청을 보낸 Users 정보
+     * @return 쿼리 요청에 대한 응답 객체
      */
     public static QueryResponse of (QueryLog queryLog, Users users) {
         return new QueryResponse(
