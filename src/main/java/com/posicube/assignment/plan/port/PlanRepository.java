@@ -10,5 +10,5 @@ public interface PlanRepository {
     Plan save(Plan plan);
     Optional<Plan> findPlanByType(PlanType type);
     long count();
-    List<Plan> saveAll(List<Plan> planJpaEntities);
+    List<Plan> saveAll(List<Plan> plans);
 }
