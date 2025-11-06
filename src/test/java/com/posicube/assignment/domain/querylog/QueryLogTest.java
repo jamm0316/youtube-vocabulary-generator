@@ -1,13 +1,13 @@
 package com.posicube.assignment.domain.querylog;
 
 import com.posicube.assignment.common.exception.BaseException;
-import com.posicube.assignment.common.utils.TokenCalculator;
-import com.posicube.assignment.plan.domain.entity.Plan;
-import com.posicube.assignment.plan.domain.vo.PlanType;
-import com.posicube.assignment.querylog.domain.vo.ModelType;
-import com.posicube.assignment.querylog.domain.QueryLog;
+import com.posicube.assignment.plan.domain.model.Plan;
+import com.posicube.assignment.plan.domain.model.PlanType;
+import com.posicube.assignment.querylog.domain.model.ModelType;
+import com.posicube.assignment.querylog.domain.model.QueryLog;
+import com.posicube.assignment.querylog.domain.policy.TokenCalculator;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
-import com.posicube.assignment.users.domain.entity.Users;
+import com.posicube.assignment.users.domain.model.Users;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,7 +50,7 @@ public class QueryLogTest {
 
         //then
         assertThat(queryLog).isNotNull();
-        assertThat(queryLog.getUser()).isEqualTo(testUser);
+        assertThat(queryLog.getUserId()).isEqualTo(testUser.getId());
         assertThat(queryLog.getType()).isEqualTo(ModelType.GPT5);
         assertThat(queryLog.getContent()).isEqualTo(prompt);
         assertThat(queryLog.getUsedTokens()).isEqualTo(expectedTokens);
@@ -78,7 +78,7 @@ public class QueryLogTest {
 
         //then
         assertThat(queryLog).isNotNull();
-        assertThat(queryLog.getUser()).isEqualTo(testUser);
+        assertThat(queryLog.getUserId()).isEqualTo(testUser.getId());
         assertThat(queryLog.getType()).isEqualTo(ModelType.GPT_4O_MINI);
         assertThat(queryLog.getContent()).isEqualTo(prompt);
         assertThat(queryLog.getUsedTokens()).isEqualTo(expectedTokens);
