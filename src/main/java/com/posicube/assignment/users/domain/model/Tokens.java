@@ -1,6 +1,6 @@
-package com.posicube.assignment.users.domain.vo;
+package com.posicube.assignment.users.domain.model;
 
-import com.posicube.assignment.plan.domain.entity.Plan;
+import com.posicube.assignment.plan.domain.model.Plan;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
