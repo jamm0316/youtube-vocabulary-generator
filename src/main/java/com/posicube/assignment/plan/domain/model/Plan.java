@@ -16,21 +16,21 @@ public class Plan {
     private PlanType type;  //사용자 요금제
     private LocalDateTime updateAt;
 
-    private Plan(PlanType type) {
+    static public Plan create(PlanType type) {
         validatePlanInvariants(type);
-        this.type = type;
-        this.updateAt = LocalDateTime.now();
+        return Plan.builder()
+                .type(type)
+                .updateAt(LocalDateTime.now())
+                .build();
     }
 
-    private void validatePlanInvariants(PlanType type) {
+    static private void validatePlanInvariants(PlanType type) {
         if (Objects.isNull(type)) {
             throw new BaseException(PlanExceptionStatus.PLAN_TYPE_CANNOT_BE_NULL);
         }
     }
 
-    static public Plan create(PlanType type) {
-        return new Plan(type);
-    }
+
 
     public void changePlanType(PlanType newType) {
         if (Objects.isNull(newType)) {
