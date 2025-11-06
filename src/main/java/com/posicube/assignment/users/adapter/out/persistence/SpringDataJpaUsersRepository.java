@@ -1,6 +1,7 @@
 package com.posicube.assignment.users.adapter.out.persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -10,16 +11,7 @@ public interface SpringDataJpaUsersRepository extends JpaRepository<UsersJpaEnti
 
     Optional<UsersJpaEntity> findUsersById(Long id);
 
-    @Query("""
-            SELECT new com.posicube.assignment.users.adapter.out.persistence.UserTokenResetDto(
-                u.id,
-                u.plan.type,
-                u.account,
-                u.password,
-                u.name,
-                u.quota
-               )
-            FROM UsersJpaEntity u
-            """)
-    List<UserTokenResetDto> findAllFotTokenReset();
+    @Modifying
+    @Query("UPDATE UsersJpaEntity u SET u.usedTokens = 0, u.remainingTokens = u.quota")
+    int resetAllUserTokens();
 }

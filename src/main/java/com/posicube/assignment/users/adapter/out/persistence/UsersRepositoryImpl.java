@@ -35,7 +35,7 @@ public class UsersRepositoryImpl implements UsersRepository {
     }
 
     @Override
-    public List<UserTokenResetDto> findAllFotTokenReset() {
-        return jpaUsersRepository.findAllFotTokenReset();
+    public int resetAllUserTokens() {
+        return jpaUsersRepository.resetAllUserTokens();
     }
 }
