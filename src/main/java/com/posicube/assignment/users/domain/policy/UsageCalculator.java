@@ -3,6 +3,7 @@ package com.posicube.assignment.users.domain.policy;
 import com.posicube.assignment.querylog.domain.model.ModelType;
 import com.posicube.assignment.querylog.domain.model.QueryLog;
 import com.posicube.assignment.users.domain.model.Users;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Component
 public class UsageCalculator {
 
     private static final BigDecimal THOUSAND = new BigDecimal("1000");

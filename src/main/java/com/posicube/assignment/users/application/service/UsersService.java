@@ -25,6 +25,7 @@ public class UsersService {
     private final UsersRepository usersRepository;
     private final PlanService planService;
     private final QueryLogRepository queryLogRepository;
+    private final UsageCalculator usageCalculator;
 
     @Transactional
     public Users createUser(UserCreateRequest request) {
@@ -47,7 +48,6 @@ public class UsersService {
 
         List<QueryLog> queryLogs = queryLogRepository.findAllByUserId(userId);
 
-        UsageCalculator usageCalculator = new UsageCalculator();
         UsageSummary usageSummary = usageCalculator.calculate(user, queryLogs);
 
         return UsageResponse.from(usageSummary);
