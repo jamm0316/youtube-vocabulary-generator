@@ -36,10 +36,6 @@ public class QueryLogFacade {
                 lastException = e;
                 attempt++;
 
-                if (attempt >= MAX_RETRY) {
-                    break;
-                }
-
                 try {
                     Thread.sleep(RETRY_DELAY_MS * attempt);
                 } catch (InterruptedException ie) {
@@ -50,6 +46,6 @@ public class QueryLogFacade {
         }
 
         //3. 재시도 실패 시
-        throw new BaseException(QueryLogExceptionStatus.TOO_MANY_REQUESTS);
+        throw new BaseException(QueryLogExceptionStatus.TOO_MANY_CONCURRENT_REQUESTS);
     }
 }
