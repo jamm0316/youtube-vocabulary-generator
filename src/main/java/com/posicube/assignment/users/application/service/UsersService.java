@@ -35,12 +35,12 @@ public class UsersService {
             throw new BaseException(UserExceptionStatus.DUPLICATE_ACCOUNT);
         });
 
-        //1. plan을 찾는다.
+        //2. plan을 찾는다.
         PlanType type = PlanType.from(request.plan());
         Plan plan = planService.findPlanByType(type)
                 .orElseThrow(() -> new BaseException(UserExceptionStatus.INVALID_PLAN_FOR_USER_CREATION));
 
-        //2. 해당 plan을 갖는 user를 만든다.
+        //3. 해당 plan을 갖는 user를 만든다.
         Users user = Users.create(
                 request.account(), request.password(), request.name(), plan);
 
