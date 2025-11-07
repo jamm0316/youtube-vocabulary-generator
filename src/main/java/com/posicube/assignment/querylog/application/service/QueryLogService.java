@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class QueryLogService {
     private final QueryLogRepository queryLogRepository;
     private final UsersRepository usersRepository;
-    private final RateLimiter rateLimiter;
     private final LlmClient llmClient;
     private final TokenCalculator tokenCalculator;
 
