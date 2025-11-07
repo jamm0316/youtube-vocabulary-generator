@@ -11,4 +11,5 @@ public interface UsersRepository {
     Optional<Users> findUserById(Long id);
     int resetAllUserTokens();
     List<UserInfoResponse> findAllUsersInfo();
+    Optional<Users> findUsersByAccount(String account);
 }
