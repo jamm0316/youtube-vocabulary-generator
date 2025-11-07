@@ -7,16 +7,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.View;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     /**
      * BaseException (커스텀 예외) 발생 시 처리하는 핸들러
      */
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<BaseResponse<Object>> handleBaseException(BaseException e, HttpServletRequest request) {
-        return BaseResponse.error(e.getStatus());
+        BaseResponse<Object> errorResponse = new BaseResponse<>(e.getStatus());
+        return new ResponseEntity<>(errorResponse,e.getStatus().getHttpStatus());
     }
 
     /**
@@ -25,7 +26,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Object>> handleException(Exception e) {
         e.printStackTrace();
-        return BaseResponse.error(BaseResponseStatus.INTERNAL_SERVER_ERROR);
+        BaseResponse<Object> errorResponse = new BaseResponse<>(BaseResponseStatus.INTERNAL_SERVER_ERROR.getHttpStatus());
+        return new ResponseEntity<>(errorResponse, BaseResponseStatus.INTERNAL_SERVER_ERROR.getHttpStatus());
     }
 
     /**
@@ -34,6 +36,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse<Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        return BaseResponse.error(BaseResponseStatus.VALIDATION_ERROR, errorMessage);
+        BaseResponse<Object> errorResponse = new BaseResponse<>(BaseResponseStatus.VALIDATION_ERROR, errorMessage);
+        return new ResponseEntity<>(errorResponse, BaseResponseStatus.VALIDATION_ERROR.getHttpStatus());
     }
 }
