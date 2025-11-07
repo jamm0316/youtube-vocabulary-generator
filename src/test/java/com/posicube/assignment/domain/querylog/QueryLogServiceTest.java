@@ -6,6 +6,7 @@ import com.posicube.assignment.plan.domain.model.Plan;
 import com.posicube.assignment.plan.domain.model.PlanType;
 import com.posicube.assignment.querylog.application.commandquery.QueryRequest;
 import com.posicube.assignment.querylog.application.commandquery.QueryResponse;
+import com.posicube.assignment.querylog.application.facade.QueryLogFacade;
 import com.posicube.assignment.querylog.application.service.QueryLogService;
 import com.posicube.assignment.querylog.application.service.RateLimiter;
 import com.posicube.assignment.querylog.domain.model.QueryLog;
@@ -48,6 +49,8 @@ public class QueryLogServiceTest {
 
     @InjectMocks
     QueryLogService queryService;
+    @InjectMocks
+    QueryLogFacade queryLogFacade;
 
     private Users mockUser;
     private QueryRequest mockRequest;
@@ -74,11 +77,10 @@ public class QueryLogServiceTest {
     @DisplayName("submitQuery: Rate Limit를 초과하면 예외를 던진다.")
     public void submitQuery_rateLimit_fail() {
         //given: RateLimiter가 항상 요청 거부
-        when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(rateLimiter.isAllowed(1L)).thenReturn(false);
 
         //when&then: 서비스 실행 시 예외 검증
-        assertThatThrownBy(() -> queryService.submitQuery(1L, mockRequest))
+        assertThatThrownBy(() -> queryLogFacade.submitQuery(1L, mockRequest))
                 .isInstanceOf(BaseException.class)
                 .hasMessage(QueryLogExceptionStatus.TOO_MANY_REQUESTS.getMessage());
     }
@@ -92,7 +94,6 @@ public class QueryLogServiceTest {
         ReflectionTestUtils.setField(mockUser, "tokens", zeroToken);
 
         when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
-        when(rateLimiter.isAllowed(1L)).thenReturn(true);
 
         //then: 서비스 실행 시 예외 검증
         assertThatThrownBy(() -> queryService.submitQuery(1L, mockRequest))
@@ -105,7 +106,6 @@ public class QueryLogServiceTest {
     public void submitQuery_llmClientResponse_success() {
         //given: 모든 의존성이 정상적으로 동작하도록 설정
         when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
-        when(rateLimiter.isAllowed(1L)).thenReturn(true);
         when(llmClient.query(anyString(), anyString())).thenReturn("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
         when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -126,7 +126,6 @@ public class QueryLogServiceTest {
         long expectedUsedTokens = new TokenCalculator().calculateTokensFromPrompt(mockRequest.q());
 
         when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
-        when(rateLimiter.isAllowed(1L)).thenReturn(true);
         when(llmClient.query(anyString(), anyString())).thenReturn("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
         when(tokenCalculator.calculateTokensFromPrompt(mockRequest.q())).thenReturn(expectedUsedTokens);
         when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -161,7 +160,6 @@ public class QueryLogServiceTest {
         long expectedUsedTokens = 75L;
 
         when(usersRepository.findUserById(1L)).thenReturn(Optional.of(spy));
-        when(rateLimiter.isAllowed(1L)).thenReturn(true);
         when(llmClient.query(anyString(), anyString())).thenReturn("i".repeat(100));
         when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -184,7 +182,6 @@ public class QueryLogServiceTest {
     public void submitQuery_llmClient_fail() {
         //given: LLM 클라이언트 호출 시 예외 발생 설정
         when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
-        when(rateLimiter.isAllowed(1L)).thenReturn(true);
         when(llmClient.query(anyString(), anyString())).thenThrow(new RuntimeException("외부 API 호출 중 오류가 발생했습니다"));
 
         //when&then: 서비스 실행 시 예외 발생 검증

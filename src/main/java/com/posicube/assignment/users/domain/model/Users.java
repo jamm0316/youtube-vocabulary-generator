@@ -18,23 +18,25 @@ public class Users {
     private final String password;
     private final String name;
     private final Tokens tokens;
+    private final Long version;
 
     //1. 생성 전용 메서드: Service 계층에서 새로운 Users 만들때 사용
     static public Users create(String account, String password, String name, Plan plan) {
         Tokens initialledToken = Tokens.initialOf(plan);
         validateUserInvariants(account, password, name, initialledToken);
-        return new Users(null, plan.getType(), account, password, name, initialledToken);
+        return new Users(null, plan.getType(), account, password, name, initialledToken, null);
     }
 
     //2. 재구성 전용 builder: JPA Entity -> Domain 변환 시 사용
     @Builder(builderMethodName = "fromPersistenceBuilder")
-    private Users(Long id, PlanType planType, String account, String password, String name, Tokens tokens) {
+    private Users(Long id, PlanType planType, String account, String password, String name, Tokens tokens, Long version) {
         this.id = id;
         this.planType = planType;
         this.account = account;
         this.password = password;
         this.name = name;
         this.tokens = tokens;
+        this.version = version;
     }
 
     private static void validateUserInvariants(String account, String password, String name, Tokens tokens) {
@@ -63,7 +65,8 @@ public class Users {
                 this.account,
                 this.password,
                 this.name,
-                newTokens
+                newTokens,
+                this.version
         );
     }
 }
