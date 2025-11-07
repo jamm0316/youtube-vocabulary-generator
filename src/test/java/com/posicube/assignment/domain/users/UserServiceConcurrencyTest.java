@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -45,7 +45,7 @@ public class UserServiceConcurrencyTest {
     @Autowired
     private PlatformTransactionManager transactionManager;
 
-    @MockBean
+    @MockitoBean
     private LlmClient llmClient;
 
     private Users testUser;
