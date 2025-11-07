@@ -9,6 +9,8 @@ import com.posicube.assignment.users.domain.model.Users;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -21,13 +23,14 @@ public class UserController {
     private final UsersService usersService;
 
     @PostMapping("/users")
-    public BaseResponse<UserInfoResponse> create(@Valid @RequestBody UserCreateRequest request) {
+    public ResponseEntity<BaseResponse<UserInfoResponse>> create(@Valid @RequestBody UserCreateRequest request) {
         Users user = usersService.createUser(request);
-        return new BaseResponse<>(UserInfoResponse.from(user));
+        UserInfoResponse from = UserInfoResponse.from(user);
+        return BaseResponse.success(from, HttpStatus.CREATED);
     }
 
     @PostMapping("/usage")
-    public BaseResponse<UsageResponse> getUsage(@RequestHeader("X-User-Id") Long userId) {
-        return new BaseResponse<>(usersService.getUserUsage(userId));
+    public ResponseEntity<BaseResponse<UsageResponse>> getUsage(@RequestHeader("X-User-Id") Long userId) {
+        return BaseResponse.success(usersService.getUserUsage(userId));
     }
 }
