@@ -11,13 +11,6 @@ import org.springframework.web.servlet.View;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    private final View error;
-
-    public GlobalExceptionHandler(View error) {
-        this.error = error;
-    }
-
     /**
      * BaseException (커스텀 예외) 발생 시 처리하는 핸들러
      */
