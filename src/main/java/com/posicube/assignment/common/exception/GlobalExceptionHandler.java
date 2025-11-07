@@ -16,8 +16,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<BaseResponse<Object>> handleBaseException(BaseException e, HttpServletRequest request) {
-        BaseResponse<Object> response = new BaseResponse<>(e.getStatus());
-        return new ResponseEntity<>(response, e.getStatus().getHttpStatus());
+        return BaseResponse.error(e.getStatus());
     }
 
     /**
@@ -26,8 +25,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Object>> handleException(Exception e) {
         e.printStackTrace();
-        BaseResponse<Object> response = new BaseResponse<>(BaseResponseStatus.INTERNAL_SERVER_ERROR);
-        return new ResponseEntity<>(response, BaseResponseStatus.INTERNAL_SERVER_ERROR.getHttpStatus());
+        return BaseResponse.error(BaseResponseStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -36,7 +34,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse<Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        BaseResponse<Object> response = new BaseResponse<>(BaseResponseStatus.VALIDATION_ERROR, errorMessage);
-        return new ResponseEntity<>(response, BaseResponseStatus.VALIDATION_ERROR.getHttpStatus());
+        return BaseResponse.error(BaseResponseStatus.VALIDATION_ERROR, errorMessage);
     }
 }
