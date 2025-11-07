@@ -1,8 +1,9 @@
 package com.posicube.assignment.common.baseResponse;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
+@Getter
 public class BaseResponse<T> {
     private boolean isSuccess;
     private String message;
@@ -35,28 +36,5 @@ public class BaseResponse<T> {
         this.message = message;
         this.httpStatus = status.getHttpStatus();
         this.result = null;
-    }
-
-    //성공 응답
-    public static <T> ResponseEntity<BaseResponse<T>> success(T data) {
-        return ResponseEntity.ok(new BaseResponse<>(data));
-    }
-
-    //성공 응답 (상태 코드 지정)
-    public static <T> ResponseEntity<BaseResponse<T>> success(T data, HttpStatus status) {
-        return ResponseEntity.status(status).body(new BaseResponse<>(data));
-    }
-
-    //실패 응답
-    public static ResponseEntity<BaseResponse<Object>> error(ResponseStatus status) {
-        return ResponseEntity.status(status.getHttpStatus())
-                .body(new BaseResponse<>(status));
-    }
-
-    //실패 응답 (메시지 커스텀)
-    public static ResponseEntity<BaseResponse<Object>> error(ResponseStatus status, String message) {
-        return ResponseEntity
-                .status(status.getHttpStatus())
-                .body(new BaseResponse<>(status, message));
     }
 }
