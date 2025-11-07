@@ -1,7 +1,6 @@
 package com.posicube.assignment.users.adapter.out.persistence;
 
 import com.posicube.assignment.users.application.commandquery.UserInfoResponse;
-import com.posicube.assignment.users.domain.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
