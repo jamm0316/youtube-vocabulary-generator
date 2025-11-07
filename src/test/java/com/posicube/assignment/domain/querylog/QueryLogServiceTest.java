@@ -35,13 +35,19 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class QueryLogServiceTest {
-    @Mock UsersRepository usersRepository;
-    @Mock QueryLogRepository queryLogRepository;
-    @Mock LlmClient llmClient;
-    @Mock RateLimiter rateLimiter;
-    @Mock TokenCalculator tokenCalculator;
+    @Mock
+    UsersRepository usersRepository;
+    @Mock
+    QueryLogRepository queryLogRepository;
+    @Mock
+    LlmClient llmClient;
+    @Mock
+    RateLimiter rateLimiter;
+    @Mock
+    TokenCalculator tokenCalculator;
 
-    @InjectMocks QueryLogService queryService;
+    @InjectMocks
+    QueryLogService queryService;
 
     private Users mockUser;
     private QueryRequest mockRequest;
@@ -54,7 +60,7 @@ public class QueryLogServiceTest {
 
     @Test
     @DisplayName("submitQuery: 사용자 조회 실패: 존재하지 않는 사용자면 예외를 던진다.")
-    public void submitQuery_userNotFound_fail() throws Exception {
+    public void submitQuery_userNotFound_fail() {
         //given: ID조회 시 결과 없음
         when(usersRepository.findUserById(anyLong())).thenReturn(Optional.empty());
 
@@ -66,7 +72,7 @@ public class QueryLogServiceTest {
 
     @Test
     @DisplayName("submitQuery: Rate Limit를 초과하면 예외를 던진다.")
-    public void submitQuery_rateLimit_fail() throws Exception {
+    public void submitQuery_rateLimit_fail() {
         //given: RateLimiter가 항상 요청 거부
         when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(rateLimiter.isAllowed(1L)).thenReturn(false);
@@ -79,7 +85,7 @@ public class QueryLogServiceTest {
 
     @Test
     @DisplayName("submitQuery: 잔여 토큰이 없으면 예외를 던진다.")
-    public void submitQuery_insufficientTokens_fail() throws Exception {
+    public void submitQuery_insufficientTokens_fail() {
         //given: 토큰이 0인 mock Token 객체 주입
         Tokens zeroToken = mock(Tokens.class);
         when(zeroToken.getRemainingTokens()).thenReturn(0L);
@@ -96,7 +102,7 @@ public class QueryLogServiceTest {
 
     @Test
     @DisplayName("정상 요청 시 LlmClient에서 응답")
-    public void submitQuery_llmClientResponse_success() throws Exception {
+    public void submitQuery_llmClientResponse_success() {
         //given: 모든 의존성이 정상적으로 동작하도록 설정
         when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(rateLimiter.isAllowed(1L)).thenReturn(true);
@@ -114,7 +120,7 @@ public class QueryLogServiceTest {
 
     @Test
     @DisplayName("정상 요청 시 토큰을 정확히 차감한다.")
-    public void submitQuery_deDuctTokens_success() throws Exception {
+    public void submitQuery_deDuctTokens_success() {
         //given: 실제 Users(spy) 객체와 그 안의 실제 Tokens 객체 사용
         long initialRemainingTokens = mockUser.getTokens().getRemainingTokens();
         long expectedUsedTokens = new TokenCalculator().calculateTokensFromPrompt(mockRequest.q());
@@ -138,7 +144,7 @@ public class QueryLogServiceTest {
 
     @Test
     @DisplayName("잔여 토큰보다 큰 요청도 마지막이라면 성공한다.")
-    public void submitQuery_lastRequest_succeeds() throws Exception {
+    public void submitQuery_lastRequest_succeeds() {
         //given: 잔여 토큰이 매우 적은 상황 설정
         Tokens realTokens = new Tokens(10000L, 9995L, 5L);
         Users realUser = Users.fromPersistenceBuilder()
@@ -175,7 +181,7 @@ public class QueryLogServiceTest {
 
     @Test
     @DisplayName("LLM 클라이언트 호출 실패 시 예외 발생 및 토큰 미차감")
-    public void submitQuery_llmClient_fail() throws Exception {
+    public void submitQuery_llmClient_fail() {
         //given: LLM 클라이언트 호출 시 예외 발생 설정
         when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(rateLimiter.isAllowed(1L)).thenReturn(true);

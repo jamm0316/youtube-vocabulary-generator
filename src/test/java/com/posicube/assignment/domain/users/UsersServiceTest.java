@@ -1,11 +1,13 @@
 package com.posicube.assignment.domain.users;
 
+import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.application.service.PlanService;
 import com.posicube.assignment.plan.domain.model.Plan;
 import com.posicube.assignment.plan.domain.model.PlanType;
 import com.posicube.assignment.users.application.commandquery.UserCreateRequest;
 import com.posicube.assignment.users.application.service.UsersService;
 import com.posicube.assignment.users.domain.model.Users;
+import com.posicube.assignment.users.exception.UserExceptionStatus;
 import com.posicube.assignment.users.port.UsersRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,17 +20,21 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UsersServiceTest {
-    @Mock private UsersRepository usersRepository;
-    @Mock private PlanService planService;
-    @InjectMocks private UsersService usersService;
+    @Mock
+    private UsersRepository usersRepository;
+    @Mock
+    private PlanService planService;
+    @InjectMocks
+    private UsersService usersService;
 
     @Test
     @DisplayName("createUser: 새로운 사용자를 성공적으로 생성하고 저장한다.")
-    public void createUser() throws Exception {
+    public void createUser() {
         //given
         UserCreateRequest request = new UserCreateRequest("hysic88", "123456", "현식", "LITE");
         Plan plan = Plan.create(PlanType.LITE);
@@ -56,5 +62,22 @@ public class UsersServiceTest {
 
         assertThat(savedUser.getAccount()).isEqualTo("hysic88");
         assertThat(savedUser.getPassword()).isEqualTo("123456");
+    }
+
+    @Test
+    @DisplayName("유저 생성 실패: 이미 계정이 존재할 경우 예외를 반환한다.")
+    public void createUser_fail() {
+        //given
+        UserCreateRequest request = new UserCreateRequest("hysic88", "123456", "현식", "LITE");
+        when(usersRepository.findUsersByAccount(request.account())).thenReturn(Optional.of(mock(Users.class)));
+
+        //when&then
+        assertThatThrownBy(() -> usersService.createUser(request))
+                .isInstanceOf(BaseException.class)
+                .hasMessage(UserExceptionStatus.DUPLICATE_ACCOUNT.getMessage());
+
+        //then
+        verify(usersRepository, never()).save(any(Users.class));
+
     }
 }

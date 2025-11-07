@@ -20,7 +20,7 @@ public class UsersJpaEntity {
             foreignKey = @ForeignKey(name = "FK_USER_PLAN"))
     private PlanJpaEntity plan;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, unique = true)
     private String account;
 
     @Column(nullable = false, length = 100)

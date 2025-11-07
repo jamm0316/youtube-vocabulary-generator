@@ -12,6 +12,9 @@ public interface SpringDataJpaUsersRepository extends JpaRepository<UsersJpaEnti
 
     Optional<UsersJpaEntity> findUsersById(Long id);
 
+    Optional<UsersJpaEntity> findUsersByAccount(String account);
+
+
     @Modifying
     @Query("UPDATE UsersJpaEntity u SET u.usedTokens = 0, u.remainingTokens = u.quota")
     int resetAllUserTokens();

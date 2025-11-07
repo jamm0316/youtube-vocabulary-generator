@@ -26,7 +26,7 @@ public class UsersTest {
 
     @Test
     @DisplayName("생성 성공: User 정상 생성")
-    public void create_user_success() throws Exception {
+    public void create_user_success() {
         //then
         assertThat(user.getAccount()).isEqualTo("evanbackeng@gmail.com");
         assertThat(user.getPassword()).isEqualTo("pass1234");
@@ -38,7 +38,7 @@ public class UsersTest {
 
     @Test
     @DisplayName("생성 실패: User account, password, name이 null이면 예외 발생")
-    public void create_user_account_password_name_cannot_null_fail() throws Exception {
+    public void create_user_account_password_name_cannot_null_fail() {
         //when&then
         assertThatThrownBy(() -> Users.create(
                 null, "pass1234", "evan", Plan.create(PlanType.LITE)))
@@ -58,7 +58,7 @@ public class UsersTest {
 
     @Test
     @DisplayName("생성 실패: User account, password, name이 공백이 포함되면 예외 발생")
-    public void create_user_account_password_name_cannot_white_space_fail() throws Exception {
+    public void create_user_account_password_name_cannot_white_space_fail() {
         //when&then
         assertThatThrownBy(() -> Users.create(
                 "ev an  backeng@  gmail.    com", "pass1234", "evan", Plan.create(PlanType.LITE)))

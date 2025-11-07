@@ -44,4 +44,10 @@ public class UsersRepositoryImpl implements UsersRepository {
     public List<UserInfoResponse> findAllUsersInfo() {
         return jpaUsersRepository.findAllUsersInfo();
     }
+
+    @Override
+    public Optional<Users> findUsersByAccount(String account) {
+        return jpaUsersRepository.findUsersByAccount(account)
+                .map(mapper::toDomain);
+    }
 }

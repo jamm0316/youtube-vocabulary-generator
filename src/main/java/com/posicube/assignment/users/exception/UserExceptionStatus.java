@@ -17,6 +17,7 @@ public enum UserExceptionStatus implements ResponseStatus {
     TOKEN_CANNOT_NULL(false, "User-7", "tokens는 null일 수 없습니다."),
     INVALID_PLAN_FOR_USER_CREATION(false, "User-8", "사용자 생성에 유효하지 않은 요금제입니다."),
     USER_NOT_FOUND(false, "User-9", "사용자를 찾을 수 없습니다."),
+    DUPLICATE_ACCOUNT(false, "User-10", "이미 존재하는 계정입니다."),
     ;
 
     private final boolean isSuccess;

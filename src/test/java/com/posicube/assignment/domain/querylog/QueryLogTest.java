@@ -32,7 +32,7 @@ public class QueryLogTest {
 
     @Test
     @DisplayName("성공: GPT-5 모델의 토큰과 비용을 정확히 계산한다.")
-    public void createQuery_withGpt5_calculatesTokensAndCostCorrectly() throws Exception {
+    public void createQuery_withGpt5_calculatesTokensAndCostCorrectly() {
         //given
         String prompt = "안녕하세요? 이번 포지큐브 백엔드 주니어 개발자에 지원하게 된 송재명 입니다. 100자에 맞춰 프롬프트를 작성하면 GPT-5모델은 5L의 토큰과 0.02의 비용이 청구될 것입니다.";
         String answer = "GPT-5 모델의 답변입니다.";
@@ -59,7 +59,7 @@ public class QueryLogTest {
 
     @Test
     @DisplayName("성공: GPT-4o-mini 모델의 토큰과 비용을 정확히 계산한다.")
-    public void createQuery_withGpt4iMini_calculatesTokensAndCostCorrectly() throws Exception {
+    public void createQuery_withGpt4iMini_calculatesTokensAndCostCorrectly() {
         //given
         String prompt = "안녕하세요? 이번 포지큐브 백엔드 주니어 개발자에 지원하게 된 송재명 입니다. 100자에 맞춰 프롬프트를 작성하면 GPT-4모델은 5L의 토큰과 0.02의 비용이 청구될 것입니다.";
         String answer = "GPT-4o-mini 모델의 답변입니다.";
@@ -86,7 +86,7 @@ public class QueryLogTest {
 
     @Test
     @DisplayName("성공: 토큰 계산 시 소수접을 정확히 반올림 한다.")
-    public void createQueryLog_roundsTokensCorrectly() throws Exception {
+    public void createQueryLog_roundsTokensCorrectly() {
         //given
         String promptRoundingUpFromHalf = "Length 999";  //10자 -> 10 * 0.75 = 7.5 -> 8
         String promptRoundingDownFromQuarter = "Length 1000"; //11자 -> 11 * 0.75 = 8.25 -> 8
@@ -108,7 +108,7 @@ public class QueryLogTest {
 
     @Test
     @DisplayName("실패: User가 null이면 예외를 발생시킨다.")
-    public void createQueryLog_withNullUser_fail() throws Exception {
+    public void createQueryLog_withNullUser_fail() {
         //given
         String prompt = "User가 null이면 예외를 발생시킨다.";
         String answer = "답변입니다.";
@@ -122,14 +122,14 @@ public class QueryLogTest {
 
     @Test
     @DisplayName("실패: 질의 내용(q)이 null 이거나 비어 있으면 예외를 발생시킨다.")
-    public void createQueryLog_withNullBlankQuery_fail() throws Exception {
+    public void createQueryLog_withNullBlankQuery_fail() {
         //given
         String prompt = " ";
         String answer = "답변입니다.";
         Long usedTokens = tokenCalculator.calculateTokensFromPrompt(prompt);
 
         //when&then
-        assertThatThrownBy(() -> QueryLog.create(testUser, null, ModelType.GPT5, answer,null))
+        assertThatThrownBy(() -> QueryLog.create(testUser, null, ModelType.GPT5, answer, null))
                 .isInstanceOf(BaseException.class)
                 .hasMessage(QueryLogExceptionStatus.QUERY_CANNOT_BE_NULL.getMessage());
 
@@ -140,7 +140,7 @@ public class QueryLogTest {
 
     @Test
     @DisplayName("실패: ModelType이 null 이거나 없는 모델이 들어오면 예외를 발생시킨다.")
-    public void createQueryLog_withNullModelType_fail() throws Exception {
+    public void createQueryLog_withNullModelType_fail() {
         //given
         String prompt = "ModelType이 null 이면 예외를 발생시킨다.";
         String answer = "답변입니다.";
@@ -154,20 +154,20 @@ public class QueryLogTest {
 
     @Test
     @DisplayName("실패: usedTokens이 null이면 예외를 발생시킨다.")
-    public void createQuery_withNullUsedTokens_fail() throws Exception {
+    public void createQuery_withNullUsedTokens_fail() {
         //given
         String prompt = "usedToken이 null이면 예외를 발생시킨다.";
         String answer = "답변입니다.";
 
         //when&then
-        assertThatThrownBy(() -> QueryLog.create(testUser, prompt, ModelType.GPT5,  answer,null))
+        assertThatThrownBy(() -> QueryLog.create(testUser, prompt, ModelType.GPT5, answer, null))
                 .isInstanceOf(BaseException.class)
                 .hasMessage(QueryLogExceptionStatus.USED_TOKEN_CANNOT_BE_NULL.getMessage());
     }
 
     @Test
     @DisplayName("실패: 질의 내용(q)이 800자를 초과하면 예외를 발생시킨다.")
-    public void createQuery_withTooLongQuery_fail() throws Exception {
+    public void createQuery_withTooLongQuery_fail() {
         //given
         String longPrompt = "글".repeat(801);
         String answer = "답변입니다.";

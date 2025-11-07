@@ -15,7 +15,7 @@ public class PlanTest {
     private Plan plan;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         //given
         PlanType lite = PlanType.LITE;
 
@@ -25,7 +25,7 @@ public class PlanTest {
 
     @Test
     @DisplayName("생성 성공: 정상 생성")
-    public void create_plan_success() throws Exception {
+    public void create_plan_success() {
         //given
         PlanType lite = PlanType.LITE;
 
@@ -38,7 +38,7 @@ public class PlanTest {
 
     @Test
     @DisplayName("생성 실패: PlanType이 null이면 예외 반환")
-    public void create_plan_fail() throws Exception {
+    public void create_plan_fail() {
         //when&then
         assertThatThrownBy(() -> Plan.create(null))
                 .isInstanceOf(BaseException.class)
@@ -47,7 +47,7 @@ public class PlanTest {
 
     @Test
     @DisplayName("changePlanType 메서드 성공: PlanType 변경 성공")
-    public void change_plan_type_success() throws Exception {
+    public void change_plan_type_success() {
         //when&then
         plan.changePlanType(PlanType.PRO);
         assertThat(plan.getType()).isEqualTo(PlanType.PRO);
@@ -58,7 +58,7 @@ public class PlanTest {
 
     @Test
     @DisplayName("changePlanType 메서드 실패: PlanType이 같거나 null이면 예외 발생")
-    public void update_plan_success() throws Exception {
+    public void update_plan_success() {
         //when&then
         assertThatThrownBy(() -> plan.changePlanType(PlanType.LITE))
                 .isInstanceOf(BaseException.class)
