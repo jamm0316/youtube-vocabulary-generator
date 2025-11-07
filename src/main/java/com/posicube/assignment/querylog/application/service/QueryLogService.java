@@ -31,15 +31,10 @@ public class QueryLogService {
         Users user = usersRepository.findUserById(userId)
                 .orElseThrow(() -> new BaseException(UserExceptionStatus.USER_NOT_FOUND));
 
-        //2. Rate Limit 검증
-        if (!rateLimiter.isAllowed(userId)) {
-            throw new BaseException(QueryLogExceptionStatus.TOO_MANY_REQUESTS);
-        }
-
-        //3. 잔여 토큰 확인
+        //2. 잔여 토큰 확인
         user.validateQueryPermission();
 
-        //4. llm 호출
+        //3. llm 호출
         Long usedTokens = tokenCalculator.calculateTokensFromPrompt(request.q());
         String answer;
 
@@ -49,13 +44,13 @@ public class QueryLogService {
             throw new BaseException(QueryLogExceptionStatus.LLM_API_ERROR);
         }
 
-        //5. 토큰 사용
+        //4. 토큰 사용
         Users userWithTokensUsed = user.useTokens(usedTokens);
 
-        //6. 변경된 사용자 정보를 Repository에 전달하여 저장 (더티체킹x)
+        //5. 변경된 사용자 정보를 Repository에 전달하여 저장
         Users updatedUser = usersRepository.save(userWithTokensUsed);
 
-        //7. queryLog 저장
+        //6. queryLog 저장
         QueryLog queryLog = QueryLog.create(updatedUser, request.q(), ModelType.from(request.model()), answer, usedTokens);
         QueryLog saveQuery = queryLogRepository.save(queryLog);
 
