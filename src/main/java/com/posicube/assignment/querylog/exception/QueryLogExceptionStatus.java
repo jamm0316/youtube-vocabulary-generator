@@ -18,6 +18,7 @@ public enum QueryLogExceptionStatus implements ResponseStatus {
     USED_TOKEN_CANNOT_BE_NULL(false, "QUERY_LOG-7", "사용된 토큰은 null일 수 없습니다.", HttpStatus.BAD_REQUEST),
     LLM_API_ERROR(false, "QUERY_LOG-8", "LLM API 동작 중 에러가 발생하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     ANSWER_CANNOT_BE_NULL(false, "QUERY_LOG-9", "답변이 null일 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    TOO_MANY_CONCURRENT_REQUESTS(false, "QUERY_LOG-10", "동시 요청이 많습니다. 잠시 후 다시 시도해주세요.", HttpStatus.TOO_MANY_REQUESTS),
     ;
 
     private final boolean isSuccess;
