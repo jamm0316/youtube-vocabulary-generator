@@ -37,4 +37,7 @@ public class UsersJpaEntity {
 
     @Column(nullable = false)
     private long remainingTokens;
+
+    @Version
+    private Long version;
 }

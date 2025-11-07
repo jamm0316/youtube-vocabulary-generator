@@ -18,6 +18,7 @@ public class UsersMapper {
                 .password(entity.getPassword())
                 .name(entity.getName())
                 .tokens(tokens)
+                .version(entity.getVersion())
                 .build();
     }
 
@@ -32,6 +33,7 @@ public class UsersMapper {
                 .quota(domain.getTokens().getQuota())
                 .usedTokens(domain.getTokens().getUsedTokens())
                 .remainingTokens(domain.getTokens().getRemainingTokens())
+                .version(domain.getVersion())
                 .build();
     }
 }
