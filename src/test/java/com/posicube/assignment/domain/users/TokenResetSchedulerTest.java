@@ -19,8 +19,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 public class TokenResetSchedulerTest {
-    @Autowired private TokenResetScheduler tokenResetScheduler;
-    @Autowired private UsersService usersService;
+    @Autowired
+    private TokenResetScheduler tokenResetScheduler;
+    @Autowired
+    private UsersService usersService;
 
     @BeforeEach
     void setUp() {
@@ -30,7 +32,7 @@ public class TokenResetSchedulerTest {
 
     @Test
     @DisplayName("모든 사용자의 토큰 사용량을 성공적으로 초기화 한다.")
-    public void resetAllUsersTokens_shouldReset() throws Exception {
+    public void resetAllUsersTokens_shouldReset() {
         //given
         tokenResetScheduler.resetAllUserTokens();
 

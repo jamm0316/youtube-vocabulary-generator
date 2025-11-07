@@ -25,13 +25,16 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UsersServiceTest {
-    @Mock private UsersRepository usersRepository;
-    @Mock private PlanService planService;
-    @InjectMocks private UsersService usersService;
+    @Mock
+    private UsersRepository usersRepository;
+    @Mock
+    private PlanService planService;
+    @InjectMocks
+    private UsersService usersService;
 
     @Test
     @DisplayName("createUser: 새로운 사용자를 성공적으로 생성하고 저장한다.")
-    public void createUser() throws Exception {
+    public void createUser() {
         //given
         UserCreateRequest request = new UserCreateRequest("hysic88", "123456", "현식", "LITE");
         Plan plan = Plan.create(PlanType.LITE);
@@ -63,7 +66,7 @@ public class UsersServiceTest {
 
     @Test
     @DisplayName("유저 생성 실패: 이미 계정이 존재할 경우 예외를 반환한다.")
-    public void createUser_fail() throws Exception {
+    public void createUser_fail() {
         //given
         UserCreateRequest request = new UserCreateRequest("hysic88", "123456", "현식", "LITE");
         when(usersRepository.findUsersByAccount(request.account())).thenReturn(Optional.of(mock(Users.class)));
