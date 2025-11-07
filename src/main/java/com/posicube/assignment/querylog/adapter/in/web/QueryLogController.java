@@ -1,12 +1,10 @@
 package com.posicube.assignment.querylog.adapter.in.web;
 
-import com.posicube.assignment.common.baseResponse.BaseResponse;
 import com.posicube.assignment.querylog.application.commandquery.QueryRequest;
 import com.posicube.assignment.querylog.application.commandquery.QueryResponse;
 import com.posicube.assignment.querylog.application.service.QueryLogService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,9 +14,9 @@ public class QueryLogController {
     private final QueryLogService queryService;
 
     @PostMapping
-    public ResponseEntity<BaseResponse<QueryResponse>> submitQuery(
+    public QueryResponse submitQuery(
             @RequestHeader("X-User-Id") Long userId,
             @Valid @RequestBody QueryRequest request) {
-        return BaseResponse.success(queryService.submitQuery(userId, request));
+        return queryService.submitQuery(userId, request);
     }
 }

@@ -1,6 +1,5 @@
 package com.posicube.assignment.users.adapter.in.web;
 
-import com.posicube.assignment.common.baseResponse.BaseResponse;
 import com.posicube.assignment.users.application.commandquery.UsageResponse;
 import com.posicube.assignment.users.application.commandquery.UserCreateRequest;
 import com.posicube.assignment.users.application.commandquery.UserInfoResponse;
@@ -10,11 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -23,14 +18,14 @@ public class UserController {
     private final UsersService usersService;
 
     @PostMapping("/users")
-    public ResponseEntity<BaseResponse<UserInfoResponse>> create(@Valid @RequestBody UserCreateRequest request) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserInfoResponse create(@Valid @RequestBody UserCreateRequest request) {
         Users user = usersService.createUser(request);
-        UserInfoResponse from = UserInfoResponse.from(user);
-        return BaseResponse.success(from, HttpStatus.CREATED);
+        return UserInfoResponse.from(user);
     }
 
     @PostMapping("/usage")
-    public ResponseEntity<BaseResponse<UsageResponse>> getUsage(@RequestHeader("X-User-Id") Long userId) {
-        return BaseResponse.success(usersService.getUserUsage(userId));
+    public UsageResponse getUsage(@RequestHeader("X-User-Id") Long userId) {
+        return usersService.getUserUsage(userId);
     }
 }
