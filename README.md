@@ -5,20 +5,21 @@
 <br>
 
 ## 목차
-|번호|섹션|설명|
-|---|---|---|
-|1|[프로젝트 개요](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|프로젝트 소개 및 개발 목적|
-|2|[주요 기능](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|핵심 기능 및 특징|
-|3|[기술적 의사결정](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|주요 기술 선택 이유와 트레이드오프|
-|4|[시스템 아키텍처](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|전체 시스템 구조 및 기술 스택|
-|5|[ERD](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|엔티티 관계 다이어그램|
-|6|[API 명세](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#api-%EB%AA%85%EC%84%B8)|REST API 엔드포인트 상세|
-|7|[프로젝트 구조](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|코드 구조 및 패키지 구성|
-|8|[실행 방법](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|로컬 환경 실행 가이드|
-|9|[테스트](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%85%8C%EC%8A%A4%ED%8A%B8)|테스트 전략 및 커버리지|
+|번호| 섹션                    |설명|
+|---|-----------------------|---|
+|1| [프로젝트 개요](#프로젝트-개요)   |프로젝트 소개 및 개발 목적|
+|2| [주요 기능](#주요-기능)       |핵심 기능 및 특징|
+|3| [트러블 슈팅](#트러블-슈팅)     |개발 중 발생한 문제점과 해결 과정|
+|4| [시스템 아키텍처](#시스템-아키텍처) |전체 시스템 구조 및 기술 스택|
+|5| [ERD](#ERD)           |엔티티 관계 다이어그램|
+|6| [API 명세](#API-명세)     |REST API 엔드포인트 상세|
+|7| [프로젝트 구조](#프로젝트-구조)   |코드 구조 및 패키지 구성|
+|8| [실행 방법](#실행-방법)       |로컬 환경 실행 가이드|
+|9| [테스트](#테스트)           |테스트 전략 및 커버리지|
 <br>
 
 > 각각의 자세한 내용은 Wiki로 이동하는 링크에서 확인 할 수 있습니다.
+
 <br>
 <br>
 
@@ -36,7 +37,7 @@
 - ✅ 스케줄링 - 매일 자정 자동 토큰 초기화
 - ✅ 캐싱 최적화 - Caffeine Cache를 활용한 Rate Limiter 성능 개선
 ```
-**개발 기간**: 2025.11.27 ~ 2025.11.08 (6일)  
+**개발 기간**: 2025.11.03 ~ 2025.11.09 (7일)  
 **참여 인원**: 개인 프로젝트
 
 <br>
@@ -52,11 +53,10 @@
 <br>
 
 ## 트러블 슈팅
-| Category         | Topic                                                                         | Detailed Wiki Link |
-| ---------------- | ----------------------------------------------------------------------------- | ------------------ |
-| **Concurrency**  | 동시성 문제 (로그인 & 회원 조회의 Race Condition) | [메인 문서로 이동](https://github.com/jamm0316/dailyGrowth/wiki/%5BConcurrency%5D-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C-(%EB%A1%9C%EA%B7%B8%EC%9D%B8-&-%ED%9A%8C%EC%9B%90-%EC%A1%B0%ED%9A%8C%EC%9D%98-Race-Condition)) |
-| **Security**     | Refresh Token 재발급 보안 강화 아키텍처 설계 | [메인 문서로 이동](https://github.com/jamm0316/dailyGrowth/wiki/%5BSecurity%5D-Refresh-Token-%ED%83%88%EC%B7%A8-%EB%B3%B4%EC%95%88-%EB%8C%80%EC%9D%91(UA---IP-%EC%A7%80%EB%AC%B8-%EB%B0%94%EC%9D%B8%EB%94%A9).md) |
-| **Architecture** | OAuth 모듈 리팩토링(헥사고날 아키텍처 적용) | [메인 문서로 이동](https://github.com/jamm0316/dailyGrowth/wiki/%5BArchitecture%5D-OAuth-%EB%AA%A8%EB%93%88-%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81(%ED%97%A5%EC%82%AC%EA%B3%A0%EB%82%A0-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-%EC%A0%81%EC%9A%A9)) |
+| Category        | Topic                            | Detailed Wiki Link                                                            |
+|-----------------|----------------------------------|-------------------------------------------------------------------------------|
+| **Memory**      | 메모리 누수 문제(Caffeine Cache 도입)     | [자세히 보기](wiki/troubleshooting/1.%20메모리%20누수%20해결-Caffeine%20Cache%20도입.md) |
+| **Concurrency** | 동시성 문제 (JVM, Transaction 동시성 제어) | [자세히 보기](wiki/troubleshooting/1.%20메모리%20누수%20해결-Caffeine%20Cache%20도입.md)    |
 
 <br>
 <br>
@@ -176,10 +176,9 @@ X-User-Id: 1
 <br>
 
 ## 시스템 아키텍처
-<img width="2200" height="1000" alt="System Archtecture" src="https://github.com/user-attachments/assets/f09c4016-d87f-4a56-aa96-0de40b210322" />
+<img src="./wiki/assets/architecture.png" width="800" alt="메모리 누수 발생" />
 
-<br>
-<br>
+### 기술 스택
 
 | 카테고리         | 기술              | 버전        | 용도              |
 | ------------ | --------------- | --------- | --------------- |
@@ -196,8 +195,38 @@ X-User-Id: 1
 <br>
 
 ## ERD
-<img width="2450" height="1924" alt="image" src="https://github.com/user-attachments/assets/de50e6b8-4c3b-41c6-90ff-3c340b5d4f4a" />
-**설계 포인트:**
+```mermaid
+erDiagram
+    PLAN ||--o{ USERS : ""
+    USERS ||--o{ QUERY_LOG: "" 
+    
+    PLAN {
+        PlanType type PK "LITE, PRO"
+        LocalDateTime updateAt "플랜 수정 시각"
+    }
+    
+    USERS {
+        Long id PK "AUTO_INCREMENT"
+        PlanType plan_type FK "NOT NULL"
+        String account UK "NOT NULL, UNIQUE, 100"
+        String password "NOT NULL, 100"
+        String name "NOT NULL, 30"
+        Long quota "NOT NULL"
+        Long usedTokens "NOT NULL"
+        Long remainingTokens "NOT NULL"
+        Long version "낙관적 락 버전"
+    }
+    
+    QUERY_LOG {
+        Long id PK "AUTO_INCREMENT"
+        Long user_id FK "NOT NULL, CASCADE DELETE"
+        ModelType type "NOT NULL, gpt-5 or gpt-4o-mini"
+        String content "NOT NULL, 3000"
+        String answer "NOT NULL"
+        Long usedTokens "NOT NULL"
+        LocalDateTime createAt "NOT NULL"
+    }
+```
 
 - `USERS.version`: 낙관적 락을 위한 버전 필드
 - `USERS.account`: 중복 방지를 위한 Unique 제약
@@ -257,7 +286,6 @@ src/main/java/com/posicube/assignment/
 #### 2. 프로젝트 클론 및 빌드
 
 ```bash
-git clone [repository-url]
 cd assignment
 ./gradlew build
 ```
@@ -293,6 +321,5 @@ cd assignment
 
 #### 2. 통합 테스트 (Integration Tests)
 
-- **Service 계층 테스트**: 실제 Repository 연동
 - **동시성 테스트**: ExecutorService를 활용한 Race Condition 재현
 - **스케줄러 테스트**: TokenResetScheduler 동작 확인
