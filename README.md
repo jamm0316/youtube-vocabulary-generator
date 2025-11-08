@@ -12,8 +12,7 @@
 |3|[기술적 의사결정](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|주요 기술 선택 이유와 트레이드오프|
 |4|[시스템 아키텍처](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|전체 시스템 구조 및 기술 스택|
 |5|[ERD](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|엔티티 관계 다이어그램|
-|6|[API 명세](<br>
-)|REST API 엔드포인트 상세|
+|6|[API 명세](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#api-%EB%AA%85%EC%84%B8)|REST API 엔드포인트 상세|
 |7|[프로젝트 구조](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|코드 구조 및 패키지 구성|
 |8|[실행 방법](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|로컬 환경 실행 가이드|
 |9|[테스트](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%85%8C%EC%8A%A4%ED%8A%B8)|테스트 전략 및 커버리지|
