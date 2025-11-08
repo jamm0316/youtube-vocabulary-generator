@@ -1,6 +1,5 @@
 package com.posicube.assignment.querylog.application.service;
 
-import com.posicube.assignment.LlmClient;
 import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.querylog.application.commandquery.QueryRequest;
 import com.posicube.assignment.querylog.application.commandquery.QueryResponse;
@@ -8,7 +7,8 @@ import com.posicube.assignment.querylog.domain.model.ModelType;
 import com.posicube.assignment.querylog.domain.model.QueryLog;
 import com.posicube.assignment.querylog.domain.policy.TokenCalculator;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
-import com.posicube.assignment.querylog.port.out.QueryLogRepository;
+import com.posicube.assignment.querylog.port.LlmPort;
+import com.posicube.assignment.querylog.port.QueryLogRepository;
 import com.posicube.assignment.users.domain.model.Users;
 import com.posicube.assignment.users.exception.UserExceptionStatus;
 import com.posicube.assignment.users.port.UsersRepository;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class QueryLogService {
     private final QueryLogRepository queryLogRepository;
     private final UsersRepository usersRepository;
-    private final LlmClient llmClient;
+    private final LlmPort llmPort;
     private final TokenCalculator tokenCalculator;
 
     @Transactional
@@ -38,7 +38,7 @@ public class QueryLogService {
         String answer;
 
         try {
-            answer = llmClient.query(request.q(), request.model());
+            answer = llmPort.query(request.q(), request.model());
         } catch (Exception e) {
             throw new BaseException(QueryLogExceptionStatus.LLM_API_ERROR);
         }
