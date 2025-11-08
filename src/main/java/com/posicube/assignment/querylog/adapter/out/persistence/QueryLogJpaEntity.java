@@ -30,7 +30,7 @@ public class QueryLogJpaEntity {
     @Column(nullable = false)
     private ModelType type;
 
-    @Column(nullable = false, length = 3000)
+    @Column(nullable = false, length = 3000)  //유연하게 크게 설정
     private String content;
 
     @Column(nullable = false)

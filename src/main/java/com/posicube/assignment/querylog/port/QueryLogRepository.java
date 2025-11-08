@@ -1,4 +1,4 @@
-package com.posicube.assignment.querylog.port.out;
+package com.posicube.assignment.querylog.port;
 
 import com.posicube.assignment.querylog.domain.model.QueryLog;
 
