@@ -56,7 +56,7 @@
 | Category        | Topic                            | Detailed Wiki Link                                                            |
 |-----------------|----------------------------------|-------------------------------------------------------------------------------|
 | **Memory**      | 메모리 누수 문제(Caffeine Cache 도입)     | [자세히 보기](wiki/troubleshooting/1.%20메모리%20누수%20해결-Caffeine%20Cache%20도입.md) |
-| **Concurrency** | 동시성 문제 (JVM, Transaction 동시성 제어) | [자세히 보기](wiki/troubleshooting/1.%20메모리%20누수%20해결-Caffeine%20Cache%20도입.md)    |
+| **Concurrency** | 동시성 문제 (JVM, Transaction 동시성 제어) | [자세히 보기](wiki/troubleshooting/2.%20동시성%20제어-synchronized+@Transaction%20문제%20해결.md)    |
 
 <br>
 <br>
@@ -176,7 +176,7 @@ X-User-Id: 1
 <br>
 
 ## 시스템 아키텍처
-<img src="./wiki/assets/architecture.png" width="800" alt="메모리 누수 발생" />
+<img src="./wiki/assets/architecture.png" width="800" alt="시스템 아키텍처" />
 
 ### 기술 스택
 
