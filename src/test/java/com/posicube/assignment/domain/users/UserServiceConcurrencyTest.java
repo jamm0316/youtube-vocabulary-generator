@@ -1,10 +1,10 @@
 package com.posicube.assignment.domain.users;
 
-import com.posicube.assignment.LlmClient;
 import com.posicube.assignment.plan.domain.model.Plan;
 import com.posicube.assignment.plan.domain.model.PlanType;
 import com.posicube.assignment.querylog.application.commandquery.QueryRequest;
 import com.posicube.assignment.querylog.application.facade.QueryLogFacade;
+import com.posicube.assignment.querylog.port.LlmPort;
 import com.posicube.assignment.users.domain.model.Users;
 import com.posicube.assignment.users.port.UsersRepository;
 import jakarta.persistence.EntityManager;
@@ -46,14 +46,14 @@ public class UserServiceConcurrencyTest {
     private PlatformTransactionManager transactionManager;
 
     @MockitoBean
-    private LlmClient llmClient;
+    private LlmPort llmPort;
 
     private Users testUser;
 
     @BeforeEach
     void setUp() {
         // LLM 클라이언트 Mock 설정
-        when(llmClient.query(any(), any())).thenReturn("i".repeat(100));  // 100자(문자길이) * 0.75 = 75토큰
+        when(llmPort.query(any(), any())).thenReturn("i".repeat(100));  // 100자(문자길이) * 0.75 = 75토큰
 
         TransactionStatus transaction = transactionManager.getTransaction(
                 new DefaultTransactionDefinition()

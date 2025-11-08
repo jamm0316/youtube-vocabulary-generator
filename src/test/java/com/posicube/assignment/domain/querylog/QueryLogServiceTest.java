@@ -1,18 +1,18 @@
 package com.posicube.assignment.domain.querylog;
 
-import com.posicube.assignment.LlmClient;
 import com.posicube.assignment.common.exception.BaseException;
 import com.posicube.assignment.plan.domain.model.Plan;
 import com.posicube.assignment.plan.domain.model.PlanType;
 import com.posicube.assignment.querylog.application.commandquery.QueryRequest;
 import com.posicube.assignment.querylog.application.commandquery.QueryResponse;
 import com.posicube.assignment.querylog.application.facade.QueryLogFacade;
+import com.posicube.assignment.querylog.port.LlmPort;
 import com.posicube.assignment.querylog.application.service.QueryLogService;
 import com.posicube.assignment.querylog.application.service.RateLimiter;
 import com.posicube.assignment.querylog.domain.model.QueryLog;
 import com.posicube.assignment.querylog.domain.policy.TokenCalculator;
 import com.posicube.assignment.querylog.exception.QueryLogExceptionStatus;
-import com.posicube.assignment.querylog.port.out.QueryLogRepository;
+import com.posicube.assignment.querylog.port.QueryLogRepository;
 import com.posicube.assignment.users.domain.model.Tokens;
 import com.posicube.assignment.users.domain.model.Users;
 import com.posicube.assignment.users.exception.TokenExceptionStatus;
@@ -41,7 +41,7 @@ public class QueryLogServiceTest {
     @Mock
     QueryLogRepository queryLogRepository;
     @Mock
-    LlmClient llmClient;
+    LlmPort llmPort;
     @Mock
     RateLimiter rateLimiter;
     @Mock
@@ -106,7 +106,7 @@ public class QueryLogServiceTest {
     public void submitQuery_llmClientResponse_success() {
         //given: 모든 의존성이 정상적으로 동작하도록 설정
         when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
-        when(llmClient.query(anyString(), anyString())).thenReturn("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
+        when(llmPort.query(anyString(), anyString())).thenReturn("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
         when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -126,7 +126,7 @@ public class QueryLogServiceTest {
         long expectedUsedTokens = new TokenCalculator().calculateTokensFromPrompt(mockRequest.q());
 
         when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
-        when(llmClient.query(anyString(), anyString())).thenReturn("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
+        when(llmPort.query(anyString(), anyString())).thenReturn("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
         when(tokenCalculator.calculateTokensFromPrompt(mockRequest.q())).thenReturn(expectedUsedTokens);
         when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -160,7 +160,7 @@ public class QueryLogServiceTest {
         long expectedUsedTokens = 75L;
 
         when(usersRepository.findUserById(1L)).thenReturn(Optional.of(spy));
-        when(llmClient.query(anyString(), anyString())).thenReturn("i".repeat(100));
+        when(llmPort.query(anyString(), anyString())).thenReturn("i".repeat(100));
         when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(tokenCalculator.calculateTokensFromPrompt(mockRequest.q())).thenReturn(expectedUsedTokens);
@@ -182,7 +182,7 @@ public class QueryLogServiceTest {
     public void submitQuery_llmClient_fail() {
         //given: LLM 클라이언트 호출 시 예외 발생 설정
         when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
-        when(llmClient.query(anyString(), anyString())).thenThrow(new RuntimeException("외부 API 호출 중 오류가 발생했습니다"));
+        when(llmPort.query(anyString(), anyString())).thenThrow(new RuntimeException("외부 API 호출 중 오류가 발생했습니다"));
 
         //when&then: 서비스 실행 시 예외 발생 검증
         assertThatThrownBy(() -> queryService.submitQuery(1L, mockRequest))
