@@ -2,19 +2,26 @@
 포지큐브 백엔드 엔지니어 채용 과제로 제작된 LLM 토큰 사용량 조회 및 관리 시스템입니다.
 사용자별 요금제에 따라 LLM API 사용량을 추적하고, Rate Limiting과 토큰 할당량을 관리합니다.
 <br>
+<br>
+
 ## 목차
 
 |번호|섹션|설명|
 |---|---|---|
-|1|[프로젝트 개요]()|프로젝트 소개 및 개발 목적|
-|2|[주요 기능]()|핵심 기능 및 특징|
-|3|[기술적 의사결정]()|주요 기술 선택 이유와 트레이드오프|
-|4|[시스템 아키텍처]()|전체 시스템 구조 및 기술 스택|
-|5|[ERD]()|엔티티 관계 다이어그램|
+|1|[프로젝트 개요](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|프로젝트 소개 및 개발 목적|
+|2|[주요 기능](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|핵심 기능 및 특징|
+|3|[기술적 의사결정](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|주요 기술 선택 이유와 트레이드오프|
+|4|[시스템 아키텍처](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|전체 시스템 구조 및 기술 스택|
+|5|[ERD](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|엔티티 관계 다이어그램|
 |6|[API 명세]()|REST API 엔드포인트 상세|
-|7|[프로젝트 구조]()|코드 구조 및 패키지 구성|
-|8|[실행 방법]()|로컬 환경 실행 가이드|
+|7|[프로젝트 구조](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|코드 구조 및 패키지 구성|
+|8|[실행 방법](https://github.com/jamm0316/llm-token-manager?tab=readme-ov-file#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)|로컬 환경 실행 가이드|
 |9|[테스트]()|테스트 전략 및 커버리지|
+<br>
+
+> 각각의 자세한 내용은 Wiki로 이동하는 링크에서 확인 할 수 있습니다.
+<br>
+<br>
 
 ## 프로젝트 개요
 
@@ -32,12 +39,16 @@
 ```
 **개발 기간**: 2025.11.27 ~ 2025.11.08 (6일)  
 **참여 인원**: 개인 프로젝트
+<br>
+<br>
 
 ## 주요 기능
 1. 사용자 관리: 계정 생성 및 요금제(LITE/PRO) 선택
 2. LLM 질의 처리: 제공된 LlmClient를 통한 외부 API 호출
 3. 사용량 조회: gpt-5, gpt-4o-mini 모델별 각각의 토큰 사용량 및 비용 집계
 4. 토큰 초기화: 매일 00:00 전체 사용자 토큰 리셋
+<br>
+<br>
 
 ## 트러블 슈팅
 | Category         | Topic                                                                         | Detailed Wiki Link |
@@ -116,6 +127,8 @@ src/main/java/com/posicube/assignment/
 - `application`: 유즈케이스 조율 (Service, Facade)
 - `domain`: 비즈니스 핵심 로직 (Entity, Policy)
 - `port`: 의존성 역전을 위한 인터페이스
+<br>
+<br>
 
 ## 실행 방법
 
@@ -147,4 +160,21 @@ cd assignment
 # 특정 테스트 클래스만
 ./gradlew test --tests UserServiceConcurrencyTest
 ```
+<br>
+<br>
 
+## 테스트
+
+### 테스트 전략
+
+#### 1. 단위 테스트 (Unit Tests)
+
+- **도메인 로직 검증**: Users, QueryLog, Plan 등 핵심 도메인 모델
+- **정책 검증**: TokenCalculator, UsageCalculator
+- **격리된 테스트**: Mockito를 활용한 의존성 Mock
+
+#### 2. 통합 테스트 (Integration Tests)
+
+- **Service 계층 테스트**: 실제 Repository 연동
+- **동시성 테스트**: ExecutorService를 활용한 Race Condition 재현
+- **스케줄러 테스트**: TokenResetScheduler 동작 확인
