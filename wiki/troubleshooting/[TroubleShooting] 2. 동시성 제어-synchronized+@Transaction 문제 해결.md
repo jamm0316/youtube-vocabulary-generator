@@ -19,30 +19,25 @@
 
 **문제가 된 코드:**
 ```java
-@Service
-@RequiredArgsConstructor
-public class QueryLogService {
+@Transactional  // ← 프록시가 여기서 트랜잭션 시작
+synchronized public QueryResponse submitQuery(Long userId, QueryRequest request) {  // ← synchronized는 여기부터
+    //1. 사용자 조회
+    //2. Rate Limit 검증
+    //3. 잔여 토큰 확인
+    //4. llm 호출
+    //5. 토큰 사용
+    Users userWithTokensUsed = user.useTokens(usedTokens);
 
-    @Transactional
-    public synchronized QueryResponse submitQuery(Long userId, QueryRequest request) {
-        Users user = usersRepository.findUserById(userId)
-                .orElseThrow(() -> new BaseException(UserExceptionStatus.USER_NOT_FOUND));
+    //6. 변경된 사용자 정보를 Repository에 전달하여 저장
+    Users updatedUser = usersRepository.save(userWithTokensUsed);
 
-        // Rate Limit 검증
-        if (!rateLimiter.isAllowed(userId)) {
-            throw new BaseException(QueryLogExceptionStatus.TOO_MANY_REQUESTS);
-        }
+    //7. queryLog 저장
+    QueryLog queryLog = QueryLog.create(updatedUser, request.q(), ModelType.from(request.model()), answer, usedTokens);
+    QueryLog saveQuery = queryLogRepository.save(queryLog);
 
-        // 토큰 차감
-        user.validateQueryPermission();
-        Long usedTokens = tokenCalculator.calculateTokensFromPrompt(request.q());
-        Users userWithTokensUsed = user.useTokens(usedTokens);
-
-        // DB 저장
-        Users updatedUser = usersRepository.save(userWithTokensUsed);
-        // ...
-    }
-}
+    return QueryResponse.of(saveQuery, updatedUser);
+}  // ← synchronized는 여기서 끝
+// ← 프록시가 여기서 트랜잭션 커밋 (실제 DB에 쓰기)
 ```
 
 **문제점:**
@@ -61,15 +56,6 @@ public class QueryLogService {
 - 나머지 스레드들은 BLOCKED 상태로 대기
 - **JVM 메모리(힙) 내부**에서만 동작
 
-**한계:**
-```
-Server1          Server2
-[스레드1] 🔒     [스레드2] 🔒
-    ↓                ↓
-  같은 DB 행에 동시 접근 → race condition 발생!
-→ 단일 서버 내부에서만 유효, 분산 환경에서는 무용지물
-```
-
 ### 2. `@Transactional` (Spring AOP 프록시)
 Spring AOP(Aspect-Oriented Programming)를 사용해 트랜잭션 관리
 메서드 호출 시 실제 메서드 대신 프록시 객체가 먼저 실행
@@ -82,8 +68,12 @@ java프록시.메서드() {
 }
 ```
 **핵심 문제:**
-`@Transactional`은 단일 트랜잭션 내부의 원자성만 보장
-여러 트랜잭션 간의 동시성 제어는 하지 않음
+<br>
+<img src="../assets/synchronized-and-transactional.png" width="200" alt="동시성 문제 해결" />
+
+`@Transactional`은 단일 트랜잭션 내부의 원자성만 보장하며 
+여러 트랜잭션 간의 동시성 제어는 하지 않음.
+> synchronized가 끝나는 순간과 commit 이전의 찰나의 순간에 동시성 제어의 취약점이 발생한다.
 
 ---
 
@@ -175,32 +165,49 @@ public class UsersJpaEntity {
 ```
 
 #### Facade 패턴으로 관심사 분리
+
+- lock의 범위를 service 레이어의 트랜잭션 전부터 마지막까지로 넓게 잡아서 DB 트랜잭션 동시성 제어도 함께 고려한다.
+- 따라서, Service는 비즈니스 로직에 집중하고
+- Facade 에서는 Lock관리에 집중한다.
+<br><br>
+<img src="../assets/facade-layer.png" width="200" alt="동시성 문제 해결" />
+
+
 ```java
 @Component
 @RequiredArgsConstructor
 public class QueryLogFacade {
-    private final QueryLogService service;
+    private final QueryLogService queryLogService;
     private final RateLimiter rateLimiter;
 
     private static final int MAX_RETRY = 5;
+    private static final long RETRY_DELAY_MS = 50;
 
     public QueryResponse submitQuery(Long userId, QueryRequest request) {
-        // Rate Limit (HTTP 요청 기준)
-        if (!rateLimiter.isAllowed(userId)) {
-            throw new BaseException(TOO_MANY_REQUESTS);
-        }
-
-        // 낙관적 락 재시도
+        // 1. Rate Limit 먼저 체크 (재시도 전)
+        ...
+        
+        // 2. 낙관 락 재시도 로직
         int attempt = 0;
+        OptimisticLockException lastException = null;
+
         while (attempt < MAX_RETRY) {
             try {
-                return service.submitQuery(userId, request);
+                return queryLogService.submitQuery(userId, request);
             } catch (OptimisticLockException e) {
+                lastException = e;
                 attempt++;
-                Thread.sleep(50 * attempt); // 지수 백오프
+                try {
+                    Thread.sleep(RETRY_DELAY_MS * attempt);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(ie);
+                }
             }
         }
-        throw new BaseException(TOO_MANY_CONCURRENT_REQUESTS);
+
+        //3. 재시도 실패 시
+        throw new BaseException(QueryLogExceptionStatus.TOO_MANY_CONCURRENT_REQUESTS);
     }
 }
 ```
@@ -211,15 +218,13 @@ public class QueryLogFacade {
 @Transactional
 public class QueryLogService {
     public QueryResponse submitQuery(Long userId, QueryRequest request) {
-        Users user = findUser(userId);
-        user.validateQueryPermission();
-
-        Long usedTokens = tokenCalculator.calculate(...);
-        String answer = llmClient.query(...);
-
-        Users updated = usersRepository.save(user.useTokens(usedTokens));
-        // 로그 저장
-        return QueryResponse.of(...);
+        //1. 사용자 조회
+        //2. 잔여 토큰 확인
+        //3. llm 호출
+        //4. 토큰 사용
+        //5. 변경된 사용자 정보를 Repository에 전달하여 저장
+        //6. queryLog 저장
+        return QueryResponse.of(saveQuery, updatedUser);
     }
 }
 ```
@@ -230,12 +235,13 @@ public class QueryLogService {
 <img src="../assets/concurrency-test-success.png" width="800" alt="동시성 문제 해결" />
 
 ### 동시성 테스트 (100 요청)
-| 지표 | 값           |
-|------|-------------|
-| **성공 요청** | 7           |
-| **초기 토큰** | 7,500       |
-| **최종 토큰** | 6,975 (정확!) |
-| **정확도** | 100%        |
+| 지표         | 값            |
+|------------|--------------|
+| **성공 요청**  | 7            |
+| **사용된 토큰** | 75 * 7 = 525 |
+| **초기 토큰**  | 7,500        |
+| **최종 토큰**  | 6,975 (정확!)  |
+| **정확도**    | 100%         |
 
 ---
 
