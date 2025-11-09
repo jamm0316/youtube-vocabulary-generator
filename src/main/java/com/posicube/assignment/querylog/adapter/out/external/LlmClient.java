@@ -1,11 +1,12 @@
-package com.posicube.assignment;
+package com.posicube.assignment.querylog.adapter.out.external;
 
+import com.posicube.assignment.querylog.port.LlmPort;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
 @Component
-public class LlmClient {
+public class LlmClient implements LlmPort {
     private final Random random = new Random();
 
     public String query(String query, String model) {

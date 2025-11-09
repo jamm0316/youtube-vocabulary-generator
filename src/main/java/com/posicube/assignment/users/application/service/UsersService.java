@@ -5,7 +5,7 @@ import com.posicube.assignment.plan.application.service.PlanService;
 import com.posicube.assignment.plan.domain.model.Plan;
 import com.posicube.assignment.plan.domain.model.PlanType;
 import com.posicube.assignment.querylog.domain.model.QueryLog;
-import com.posicube.assignment.querylog.port.out.QueryLogRepository;
+import com.posicube.assignment.querylog.port.QueryLogRepository;
 import com.posicube.assignment.users.application.commandquery.UsageResponse;
 import com.posicube.assignment.users.application.commandquery.UserCreateRequest;
 import com.posicube.assignment.users.application.commandquery.UserInfoResponse;
