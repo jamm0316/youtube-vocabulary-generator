@@ -16,11 +16,6 @@ import java.util.Optional;
 public class PlanService {
     private final PlanRepository planRepository;
 
-    /**
-     * PlanType으로 Plan 도메인 객체를 조회합니다.
-     * @param type 조회할 요금제 타입
-     * @return Plan 도메인 객체(Optional)
-     */
     @Transactional(readOnly = true)
     public Optional<Plan> findPlanByType(PlanType type) {
         return planRepository.findPlanByType(type);
