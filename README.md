@@ -70,9 +70,9 @@ POST /users
 Content-Type: application/json
 
 {
-  "account": "hysic88",
+  "account": "test@gmail.com",
   "password": "123456",
-  "name": "현식",
+  "name": "test123",
   "plan": "LITE"
 }
 ```
@@ -86,8 +86,8 @@ Content-Type: application/json
   "code": "BASE-1000",
   "httpStatus": "CREATED",
   "result": {
-    "account": "hysic88",
-    "name": "현식",
+    "account": "test@gmail.com",
+    "name": "test123",
     "plan": "LITE",
     "tokens": {
       "quota": 10000,
@@ -120,7 +120,7 @@ X-User-Id: 1
   "code": "BASE-1000",
   "httpStatus": "OK",
   "result": {
-    "userName": "현식",
+    "userName": "test123",
     "answer": "모델 gpt-5로부터의 응답...",
     "model": "gpt-5",
     "usedToken": 25,
