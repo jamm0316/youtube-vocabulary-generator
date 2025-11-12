@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.Random;
 
 @Component
-public class LlmClient implements LlmPort {
+public class ModelAClient implements LlmPort {
     private final Random random = new Random();
 
     public String query(String query, String model) {
