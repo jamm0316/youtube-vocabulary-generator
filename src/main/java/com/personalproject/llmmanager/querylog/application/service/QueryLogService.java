@@ -33,12 +33,12 @@ public class QueryLogService {
         //2. 잔여 토큰 확인
         user.validateQueryPermission();
 
-        //3. llm 호출
-        Long usedTokens = tokenCalculator.calculateTokensFromPrompt(request.q());
+        Long usedTokens = tokenCalculator.calculateTokensFromPrompt(request.url());
         String answer;
 
+        //3. llm 호출
         try {
-            answer = llmPort.query(request.q(), request.model());
+            answer = llmPort.query(request.url(), request.model());
         } catch (Exception e) {
             throw new BaseException(QueryLogExceptionStatus.LLM_API_ERROR);
         }
@@ -50,7 +50,7 @@ public class QueryLogService {
         Users updatedUser = usersRepository.save(userWithTokensUsed);
 
         //6. queryLog 저장
-        QueryLog queryLog = QueryLog.create(updatedUser, request.q(), ModelType.from(request.model()), answer, usedTokens);
+        QueryLog queryLog = QueryLog.create(updatedUser, request.url(), ModelType.from(request.model()), answer, usedTokens);
         QueryLog saveQuery = queryLogRepository.save(queryLog);
 
         return QueryResponse.of(saveQuery, updatedUser);
