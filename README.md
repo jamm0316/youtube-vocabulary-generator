@@ -26,7 +26,7 @@
 
 ### 개발 목적
 
-이 프로젝트는 포지큐브 백엔드 엔지니어 채용 과제로, LLM API 사용량을 효율적으로 관리하고 추적하는 시스템을 구현합니다.
+이 프로젝트는 유튜브 영상 자막에서 영어 단어를 추출하여, GPT API를 활용해 단어장으로 변환하는 서비스입니다.
 
 ### 개발 목표
 ```
@@ -36,8 +36,9 @@
 - ✅ 스케줄링 - 매일 자정 자동 토큰 초기화
 - ✅ 캐싱 최적화 - Caffeine Cache를 활용한 Rate Limiter 성능 개선
 ```
-**개발 기간**: 2025.11.03 ~ 2025.11.09 (7일)  
-**참여 인원**: 개인 프로젝트
+**개발 기간**: 2025.11.03 ~ 진행중
+**참여 인원**: 3인
+**역할**: 송재명(웹개발: 백엔드 + 프론트엔드)
 
 <br>
 <br>
@@ -105,7 +106,7 @@ Content-Type: application/json
 X-User-Id: 1
 
 {
-  "q": "채용 과제를 아래 내용을 참고해서 구현해줘.",
+  "url": "https://www.youtube.com/watch?v=Lhpu3GdlV3w",
   "model": "gpt-5"
 }
 ```
@@ -120,7 +121,19 @@ X-User-Id: 1
   "httpStatus": "OK",
   "result": {
     "userName": "test123",
-    "answer": "모델 gpt-5로부터의 응답...",
+    "answer": "
+                {
+                    voca : {
+                        [
+                            단어: 뜻, 
+                            품사: 품사,
+                            예문: 예문,
+                            유의어: [유의어1, 유의어2, 유의어3],
+                        ], […], […], […],
+                    },
+                    video_link_addr: www.youtube.com?v=0001asd0
+                }
+                ",
     "model": "gpt-5",
     "usedToken": 25,
     "remainingToken": 9975
