@@ -123,11 +123,11 @@ public class QueryLogServiceTest {
     public void submitQuery_deDuctTokens_success() {
         //given: 실제 Users(spy) 객체와 그 안의 실제 Tokens 객체 사용
         long initialRemainingTokens = mockUser.getTokens().getRemainingTokens();
-        long expectedUsedTokens = new TokenCalculator().calculateTokensFromPrompt(mockRequest.q());
+        long expectedUsedTokens = new TokenCalculator().calculateTokensFromPrompt(mockRequest.url());
 
         when(usersRepository.findUserById(1L)).thenReturn(Optional.of(mockUser));
         when(llmPort.query(anyString(), anyString())).thenReturn("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
-        when(tokenCalculator.calculateTokensFromPrompt(mockRequest.q())).thenReturn(expectedUsedTokens);
+        when(tokenCalculator.calculateTokensFromPrompt(mockRequest.url())).thenReturn(expectedUsedTokens);
         when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -163,7 +163,7 @@ public class QueryLogServiceTest {
         when(llmPort.query(anyString(), anyString())).thenReturn("i".repeat(100));
         when(queryLogRepository.save(any(QueryLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(tokenCalculator.calculateTokensFromPrompt(mockRequest.q())).thenReturn(expectedUsedTokens);
+        when(tokenCalculator.calculateTokensFromPrompt(mockRequest.url())).thenReturn(expectedUsedTokens);
 
         //when: 서비스 실행
         QueryResponse response = queryService.submitQuery(1L, mockRequest);

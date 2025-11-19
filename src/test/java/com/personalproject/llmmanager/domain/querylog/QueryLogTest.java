@@ -52,7 +52,7 @@ public class QueryLogTest {
         assertThat(queryLog).isNotNull();
         assertThat(queryLog.getUserId()).isEqualTo(testUser.getId());
         assertThat(queryLog.getType()).isEqualTo(ModelType.GPT5);
-        assertThat(queryLog.getContent()).isEqualTo(prompt);
+        assertThat(queryLog.getUrl()).isEqualTo(prompt);
         assertThat(queryLog.getUsedTokens()).isEqualTo(expectedTokens);
         assertThat(queryLog.getAnswer()).isEqualTo(answer);
     }
@@ -79,7 +79,7 @@ public class QueryLogTest {
         assertThat(queryLog).isNotNull();
         assertThat(queryLog.getUserId()).isEqualTo(testUser.getId());
         assertThat(queryLog.getType()).isEqualTo(ModelType.GPT_4O_MINI);
-        assertThat(queryLog.getContent()).isEqualTo(prompt);
+        assertThat(queryLog.getUrl()).isEqualTo(prompt);
         assertThat(queryLog.getUsedTokens()).isEqualTo(expectedTokens);
         assertThat(queryLog.getAnswer()).isEqualTo(answer);
     }
@@ -131,11 +131,11 @@ public class QueryLogTest {
         //when&then
         assertThatThrownBy(() -> QueryLog.create(testUser, null, ModelType.GPT5, answer, null))
                 .isInstanceOf(BaseException.class)
-                .hasMessage(QueryLogExceptionStatus.QUERY_CANNOT_BE_NULL.getMessage());
+                .hasMessage(QueryLogExceptionStatus.URL_CANNOT_BE_NULL.getMessage());
 
         assertThatThrownBy(() -> QueryLog.create(testUser, prompt, ModelType.GPT5, answer, usedTokens))
                 .isInstanceOf(BaseException.class)
-                .hasMessage(QueryLogExceptionStatus.QUERY_CANNOT_BE_NULL.getMessage());
+                .hasMessage(QueryLogExceptionStatus.URL_CANNOT_BE_NULL.getMessage());
     }
 
     @Test
@@ -163,19 +163,5 @@ public class QueryLogTest {
         assertThatThrownBy(() -> QueryLog.create(testUser, prompt, ModelType.GPT5, answer, null))
                 .isInstanceOf(BaseException.class)
                 .hasMessage(QueryLogExceptionStatus.USED_TOKEN_CANNOT_BE_NULL.getMessage());
-    }
-
-    @Test
-    @DisplayName("실패: 질의 내용(q)이 800자를 초과하면 예외를 발생시킨다.")
-    public void createQuery_withTooLongQuery_fail() {
-        //given
-        String longPrompt = "글".repeat(801);
-        String answer = "답변입니다.";
-        Long usedToken = tokenCalculator.calculateTokensFromPrompt(longPrompt);
-
-        //when&then
-        assertThatThrownBy(() -> QueryLog.create(testUser, longPrompt, ModelType.GPT5, answer, usedToken))
-                .isInstanceOf(BaseException.class)
-                .hasMessage(QueryLogExceptionStatus.QUERY_TOO_LONG.getMessage());
     }
 }
