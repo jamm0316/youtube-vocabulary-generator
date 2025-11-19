@@ -9,7 +9,7 @@ public enum QueryLogExceptionStatus implements ResponseStatus {
     /**
      * QueryLog 오류
      */
-    QUERY_CANNOT_BE_NULL(false, "QUERY_LOG-1", "질의 내용은 null이거나 비어있을 수 없습니다.", HttpStatus.BAD_REQUEST),
+    URL_CANNOT_BE_NULL(false, "QUERY_LOG-1", "URL은 null이거나 비어있을 수 없습니다.", HttpStatus.BAD_REQUEST),
     MODEL_TYPE_CANNOT_BE_NULL(false, "QUERY_LOG-2", "모델 타입은 null이거나 비어있을 수 없습니다.", HttpStatus.BAD_REQUEST),
     INVALID_MODEL_TYPE(false, "QUERY_LOG-3", "유효하지 않은 모델 타입입니다.", HttpStatus.BAD_REQUEST),
     USER_CANNOT_BE_NULL(false, "QUERY_LOG-4", "사용자 정보는 null일 수 없습니다.", HttpStatus.BAD_REQUEST),
