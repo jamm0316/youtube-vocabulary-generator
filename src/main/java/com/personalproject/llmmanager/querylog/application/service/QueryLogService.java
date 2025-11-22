@@ -38,6 +38,8 @@ public class QueryLogService {
 
         //3. llm 호출
         try {
+            //todo: url v=~~~~ -> video id만 param으로 넘긴다.
+            //todo: param token -> access Token
             answer = llmPort.query(request.url(), request.model());
         } catch (Exception e) {
             throw new BaseException(QueryLogExceptionStatus.LLM_API_ERROR);
