@@ -6,8 +6,6 @@ import com.personalproject.llmmanager.plan.domain.model.Plan;
 import com.personalproject.llmmanager.plan.domain.model.PlanType;
 import com.personalproject.llmmanager.querylog.domain.model.QueryLog;
 import com.personalproject.llmmanager.querylog.port.QueryLogRepository;
-import com.personalproject.llmmanager.users.adapter.in.web.response.UsageResponse;
-import com.personalproject.llmmanager.users.adapter.in.web.response.UserInfoResponse;
 import com.personalproject.llmmanager.users.application.dtos.command.UserCreateCommand;
 import com.personalproject.llmmanager.users.application.dtos.result.UsageResult;
 import com.personalproject.llmmanager.users.application.dtos.result.UserInfoResult;

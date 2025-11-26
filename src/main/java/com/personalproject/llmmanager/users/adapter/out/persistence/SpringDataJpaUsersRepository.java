@@ -1,6 +1,5 @@
 package com.personalproject.llmmanager.users.adapter.out.persistence;
 
-import com.personalproject.llmmanager.users.adapter.in.web.response.UserInfoResponse;
 import com.personalproject.llmmanager.users.application.dtos.result.UserInfoResult;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

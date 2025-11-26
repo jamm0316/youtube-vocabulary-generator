@@ -1,10 +1,9 @@
 package com.personalproject.llmmanager.users.adapter.in.web;
 
-import com.personalproject.llmmanager.users.adapter.in.web.response.UsageResponse;
 import com.personalproject.llmmanager.users.adapter.in.web.request.UserCreateRequest;
+import com.personalproject.llmmanager.users.adapter.in.web.response.UsageResponse;
 import com.personalproject.llmmanager.users.adapter.in.web.response.UserInfoResponse;
 import com.personalproject.llmmanager.users.application.service.UsersService;
-import com.personalproject.llmmanager.users.domain.model.Users;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

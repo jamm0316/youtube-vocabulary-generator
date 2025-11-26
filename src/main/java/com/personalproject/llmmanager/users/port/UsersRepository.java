@@ -1,6 +1,5 @@
 package com.personalproject.llmmanager.users.port;
 
-import com.personalproject.llmmanager.users.adapter.in.web.response.UserInfoResponse;
 import com.personalproject.llmmanager.users.application.dtos.result.UserInfoResult;
 import com.personalproject.llmmanager.users.domain.model.Users;
 

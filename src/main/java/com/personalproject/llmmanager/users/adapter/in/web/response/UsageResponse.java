@@ -2,11 +2,9 @@ package com.personalproject.llmmanager.users.adapter.in.web.response;
 
 import com.personalproject.llmmanager.users.application.dtos.result.UsageResult;
 import com.personalproject.llmmanager.users.domain.policy.ModelUsageDetails;
-import com.personalproject.llmmanager.users.domain.policy.UsageSummary;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public record UsageResponse (
         String plan,

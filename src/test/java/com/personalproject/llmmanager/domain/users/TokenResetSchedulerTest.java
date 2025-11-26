@@ -1,8 +1,6 @@
 package com.personalproject.llmmanager.domain.users;
 
 import com.personalproject.llmmanager.plan.domain.model.PlanType;
-import com.personalproject.llmmanager.users.adapter.in.web.request.UserCreateRequest;
-import com.personalproject.llmmanager.users.adapter.in.web.response.UserInfoResponse;
 import com.personalproject.llmmanager.users.application.dtos.command.UserCreateCommand;
 import com.personalproject.llmmanager.users.application.dtos.result.UserInfoResult;
 import com.personalproject.llmmanager.users.application.service.TokenResetScheduler;
