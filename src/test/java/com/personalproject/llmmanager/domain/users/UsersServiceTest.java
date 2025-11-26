@@ -4,7 +4,8 @@ import com.personalproject.llmmanager.common.exception.BaseException;
 import com.personalproject.llmmanager.plan.application.service.PlanService;
 import com.personalproject.llmmanager.plan.domain.model.Plan;
 import com.personalproject.llmmanager.plan.domain.model.PlanType;
-import com.personalproject.llmmanager.users.application.commandquery.UserCreateRequest;
+import com.personalproject.llmmanager.users.application.dtos.command.UserCreateCommand;
+import com.personalproject.llmmanager.users.application.dtos.result.UserInfoResult;
 import com.personalproject.llmmanager.users.application.service.UsersService;
 import com.personalproject.llmmanager.users.domain.model.Users;
 import com.personalproject.llmmanager.users.exception.UserExceptionStatus;
@@ -36,21 +37,20 @@ public class UsersServiceTest {
     @DisplayName("createUser: 새로운 사용자를 성공적으로 생성하고 저장한다.")
     public void createUser() {
         //given
-        UserCreateRequest request = new UserCreateRequest("hysic88", "123456", "현식", "LITE");
+        UserCreateCommand request = new UserCreateCommand("hysic88", "123456", "현식", "LITE");
         Plan plan = Plan.create(PlanType.LITE);
 
         when(planService.findPlanByType(any(PlanType.class))).thenReturn(Optional.of(plan));
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         //when
-        Users createdUser = usersService.createUser(request);
+        UserInfoResult createdUser = usersService.createUser(request);
 
         //then
         assertThat(createdUser).isNotNull();
-        assertThat(createdUser.getAccount()).isEqualTo("hysic88");
-        assertThat(createdUser.getPassword()).isEqualTo("123456");
-        assertThat(createdUser.getName()).isEqualTo("현식");
-        assertThat(createdUser.getPlanType()).isEqualTo(PlanType.LITE);
+        assertThat(createdUser.account()).isEqualTo("hysic88");
+        assertThat(createdUser.name()).isEqualTo("현식");
+        assertThat(createdUser.plan()).isEqualTo(PlanType.LITE);
 
         // planService.createPlan()이 정확히 1번 호출되었는지 검증
         verify(planService).findPlanByType(PlanType.from("LITE"));
@@ -68,7 +68,7 @@ public class UsersServiceTest {
     @DisplayName("유저 생성 실패: 이미 계정이 존재할 경우 예외를 반환한다.")
     public void createUser_fail() {
         //given
-        UserCreateRequest request = new UserCreateRequest("hysic88", "123456", "현식", "LITE");
+        UserCreateCommand request = new UserCreateCommand("hysic88", "123456", "현식", "LITE");
         when(usersRepository.findUsersByAccount(request.account())).thenReturn(Optional.of(mock(Users.class)));
 
         //when&then

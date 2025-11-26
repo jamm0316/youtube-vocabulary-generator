@@ -1,4 +1,4 @@
-package com.personalproject.llmmanager.querylog.application.commandquery;
+package com.personalproject.llmmanager.querylog.adapter.in.web.response;
 
 import java.util.List;
 

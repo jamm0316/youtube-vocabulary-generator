@@ -1,8 +1,8 @@
 package com.personalproject.llmmanager.domain.users;
 
 import com.personalproject.llmmanager.plan.domain.model.PlanType;
-import com.personalproject.llmmanager.users.application.commandquery.UserCreateRequest;
-import com.personalproject.llmmanager.users.application.commandquery.UserInfoResponse;
+import com.personalproject.llmmanager.users.application.dtos.command.UserCreateCommand;
+import com.personalproject.llmmanager.users.application.dtos.result.UserInfoResult;
 import com.personalproject.llmmanager.users.application.service.TokenResetScheduler;
 import com.personalproject.llmmanager.users.application.service.UsersService;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,8 +26,8 @@ public class TokenResetSchedulerTest {
 
     @BeforeEach
     void setUp() {
-        usersService.createUser(new UserCreateRequest("test1", "test1234", "evan", "LITE"));
-        usersService.createUser(new UserCreateRequest("test2", "test5678", "sofia", "PRO"));
+        usersService.createUser(new UserCreateCommand("test1", "test1234", "evan", "LITE"));
+        usersService.createUser(new UserCreateCommand("test2", "test5678", "sofia", "PRO"));
     }
 
     @Test
@@ -37,7 +37,7 @@ public class TokenResetSchedulerTest {
         tokenResetScheduler.resetAllUserTokens();
 
         //when
-        List<UserInfoResponse> allUsersInfo = usersService.findAllUsersInfo();
+        List<UserInfoResult> allUsersInfo = usersService.findAllUsersInfo();
 
         //then
         assertThat(allUsersInfo.size()).isEqualTo(2);

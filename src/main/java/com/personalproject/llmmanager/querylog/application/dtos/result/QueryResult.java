@@ -1,9 +1,9 @@
-package com.personalproject.llmmanager.querylog.application.commandquery;
+package com.personalproject.llmmanager.querylog.application.dtos.result;
 
 import com.personalproject.llmmanager.querylog.domain.model.QueryLog;
 import com.personalproject.llmmanager.users.domain.model.Users;
 
-public record QueryResponse (
+public record QueryResult(
         String userName,
         String answer,
         String model,
@@ -16,8 +16,8 @@ public record QueryResponse (
      * @param users 요청을 보낸 Users 정보
      * @return 쿼리 요청에 대한 응답 객체
      */
-    public static QueryResponse of (QueryLog queryLog, Users users) {
-        return new QueryResponse(
+    public static QueryResult of (QueryLog queryLog, Users users) {
+        return new QueryResult(
                 users.getName(),
                 queryLog.getAnswer(),
                 queryLog.getType().getName(),
