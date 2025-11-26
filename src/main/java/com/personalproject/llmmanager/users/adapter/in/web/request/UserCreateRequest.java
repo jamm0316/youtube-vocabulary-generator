@@ -1,5 +1,6 @@
-package com.personalproject.llmmanager.users.application.commandquery;
+package com.personalproject.llmmanager.users.adapter.in.web.request;
 
+import com.personalproject.llmmanager.users.application.dtos.command.UserCreateCommand;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -19,5 +20,7 @@ public record UserCreateRequest(
         @NotBlank(message = "planType은 null 일 수 없습니다.")
         String plan
 ) {
-
+    public UserCreateCommand toCommand() {
+        return new UserCreateCommand(this.account, this.password, this.name, this.plan);
+    }
 }
