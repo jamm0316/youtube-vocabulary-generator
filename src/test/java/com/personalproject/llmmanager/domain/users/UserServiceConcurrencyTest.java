@@ -2,7 +2,8 @@ package com.personalproject.llmmanager.domain.users;
 
 import com.personalproject.llmmanager.plan.domain.model.Plan;
 import com.personalproject.llmmanager.plan.domain.model.PlanType;
-import com.personalproject.llmmanager.querylog.application.commandquery.QueryRequest;
+import com.personalproject.llmmanager.querylog.adapter.in.web.request.QueryRequest;
+import com.personalproject.llmmanager.querylog.application.dtos.command.QueryCommand;
 import com.personalproject.llmmanager.querylog.application.facade.QueryLogFacade;
 import com.personalproject.llmmanager.querylog.port.LlmPort;
 import com.personalproject.llmmanager.users.domain.model.Users;
@@ -97,14 +98,14 @@ public class UserServiceConcurrencyTest {
 
 //        log.info("테스트 시작 - 사용자 ID: {}, 초기 토큰: {}", verifyUser.getId(), initialTokens);
 
-        QueryRequest queryRequest = new QueryRequest("i".repeat(100), "gpt-5");
+        QueryCommand queryCommand = new QueryCommand("i".repeat(100), "gpt-5");
 
         // when: 100개 동시 요청 실행
         for (int i = 0; i < concurrentUsers; i++) {
             final int reqNum = i;
             executorService.submit(() -> {
                 try {
-                    queryLogFacade.submitQuery(testUser.getId(), queryRequest);
+                    queryLogFacade.submitQuery(testUser.getId(), queryCommand);
                     successCount.incrementAndGet();
                 } catch (Exception e) {
                     failCount.incrementAndGet();

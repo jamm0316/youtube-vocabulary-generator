@@ -3,8 +3,10 @@ package com.personalproject.llmmanager.domain.querylog;
 import com.personalproject.llmmanager.common.exception.BaseException;
 import com.personalproject.llmmanager.plan.domain.model.Plan;
 import com.personalproject.llmmanager.plan.domain.model.PlanType;
-import com.personalproject.llmmanager.querylog.application.commandquery.QueryRequest;
-import com.personalproject.llmmanager.querylog.application.commandquery.QueryResponse;
+import com.personalproject.llmmanager.querylog.adapter.in.web.request.QueryRequest;
+import com.personalproject.llmmanager.querylog.adapter.in.web.response.QueryResponse;
+import com.personalproject.llmmanager.querylog.application.dtos.command.QueryCommand;
+import com.personalproject.llmmanager.querylog.application.dtos.result.QueryResult;
 import com.personalproject.llmmanager.querylog.application.facade.QueryLogFacade;
 import com.personalproject.llmmanager.querylog.port.LlmPort;
 import com.personalproject.llmmanager.querylog.application.service.QueryLogService;
@@ -53,12 +55,12 @@ public class QueryLogServiceTest {
     QueryLogFacade queryLogFacade;
 
     private Users mockUser;
-    private QueryRequest mockRequest;
+    private QueryCommand mockRequest;
 
     @BeforeEach
     void setUp() {
         mockUser = spy(Users.create("testUser", "pass1234", "evan", Plan.create(PlanType.LITE)));
-        mockRequest = new QueryRequest("test prompt", "gpt-5");
+        mockRequest = new QueryCommand("test prompt", "gpt-5");
     }
 
     @Test
@@ -111,11 +113,11 @@ public class QueryLogServiceTest {
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         //when
-        QueryResponse response = queryService.submitQuery(1L, mockRequest);
+        QueryResult result = queryService.submitQuery(1L, mockRequest);
 
         //then
-        assertThat(response).isNotNull();
-        assertThat(response.answer()).isEqualTo("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
+        assertThat(result).isNotNull();
+        assertThat(result.answer()).isEqualTo("모델 gpt-5 로부터의 응답: query 에 대한 답변입니다.");
     }
 
     @Test
@@ -132,13 +134,13 @@ public class QueryLogServiceTest {
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         //when
-        QueryResponse response = queryService.submitQuery(1L, mockRequest);
+        QueryResult result = queryService.submitQuery(1L, mockRequest);
 
         //then
         verify(mockUser, times(1)).useTokens(expectedUsedTokens);
 
         long expectedRemainingTokens = initialRemainingTokens - expectedUsedTokens;
-        assertThat(response.remainingToken()).isEqualTo(expectedRemainingTokens);
+        assertThat(result.remainingToken()).isEqualTo(expectedRemainingTokens);
     }
 
     @Test
@@ -166,15 +168,15 @@ public class QueryLogServiceTest {
         when(tokenCalculator.calculateTokensFromPrompt(mockRequest.url())).thenReturn(expectedUsedTokens);
 
         //when: 서비스 실행
-        QueryResponse response = queryService.submitQuery(1L, mockRequest);
+        QueryResult result = queryService.submitQuery(1L, mockRequest);
 
         //then
         //1. LLM 호출 확인
-        assertThat(response.answer()).isEqualTo("i".repeat(100));
+        assertThat(result.answer()).isEqualTo("i".repeat(100));
         //2. useTokens 메서드가 1번 호출됐는지 확인
         verify(spy, times(1)).useTokens(expectedUsedTokens);
         //3. 잔여토큰이 0인지 확인(음수x)
-        assertThat(response.remainingToken()).isEqualTo(0L);
+        assertThat(result.remainingToken()).isEqualTo(0L);
     }
 
     @Test
