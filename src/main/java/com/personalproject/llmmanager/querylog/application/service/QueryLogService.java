@@ -1,8 +1,10 @@
 package com.personalproject.llmmanager.querylog.application.service;
 
 import com.personalproject.llmmanager.common.exception.BaseException;
-import com.personalproject.llmmanager.querylog.application.commandquery.QueryRequest;
-import com.personalproject.llmmanager.querylog.application.commandquery.QueryResponse;
+import com.personalproject.llmmanager.querylog.adapter.in.web.request.QueryRequest;
+import com.personalproject.llmmanager.querylog.adapter.in.web.response.QueryResponse;
+import com.personalproject.llmmanager.querylog.application.dtos.command.QueryCommand;
+import com.personalproject.llmmanager.querylog.application.dtos.result.QueryResult;
 import com.personalproject.llmmanager.querylog.domain.model.ModelType;
 import com.personalproject.llmmanager.querylog.domain.model.QueryLog;
 import com.personalproject.llmmanager.querylog.domain.policy.TokenCalculator;
@@ -25,7 +27,7 @@ public class QueryLogService {
     private final TokenCalculator tokenCalculator;
 
     @Transactional
-    public QueryResponse submitQuery(Long userId, QueryRequest request) {
+    public QueryResult submitQuery(Long userId, QueryCommand command) {
         //1. 사용자 조회
         Users user = usersRepository.findUserById(userId)
                 .orElseThrow(() -> new BaseException(UserExceptionStatus.USER_NOT_FOUND));
@@ -33,14 +35,14 @@ public class QueryLogService {
         //2. 잔여 토큰 확인
         user.validateQueryPermission();
 
-        Long usedTokens = tokenCalculator.calculateTokensFromPrompt(request.url());
+        Long usedTokens = tokenCalculator.calculateTokensFromPrompt(command.url());
         String answer;
 
         //3. llm 호출
         try {
             //todo: url v=~~~~ -> video id만 param으로 넘긴다.
             //todo: param token -> access Token
-            answer = llmPort.query(request.url(), request.model());
+            answer = llmPort.query(command.url(), command.model());
         } catch (Exception e) {
             throw new BaseException(QueryLogExceptionStatus.LLM_API_ERROR);
         }
@@ -52,9 +54,9 @@ public class QueryLogService {
         Users updatedUser = usersRepository.save(userWithTokensUsed);
 
         //6. queryLog 저장
-        QueryLog queryLog = QueryLog.create(updatedUser, request.url(), ModelType.from(request.model()), answer, usedTokens);
+        QueryLog queryLog = QueryLog.create(updatedUser, command.url(), ModelType.from(command.model()), answer, usedTokens);
         QueryLog saveQuery = queryLogRepository.save(queryLog);
 
-        return QueryResponse.of(saveQuery, updatedUser);
+        return QueryResult.of(saveQuery, updatedUser);
     }
 }

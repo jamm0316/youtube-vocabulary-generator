@@ -1,8 +1,10 @@
 package com.personalproject.llmmanager.querylog.application.facade;
 
 import com.personalproject.llmmanager.common.exception.BaseException;
-import com.personalproject.llmmanager.querylog.application.commandquery.QueryRequest;
-import com.personalproject.llmmanager.querylog.application.commandquery.QueryResponse;
+import com.personalproject.llmmanager.querylog.adapter.in.web.request.QueryRequest;
+import com.personalproject.llmmanager.querylog.adapter.in.web.response.QueryResponse;
+import com.personalproject.llmmanager.querylog.application.dtos.command.QueryCommand;
+import com.personalproject.llmmanager.querylog.application.dtos.result.QueryResult;
 import com.personalproject.llmmanager.querylog.application.service.QueryLogService;
 import com.personalproject.llmmanager.querylog.application.service.RateLimiter;
 import com.personalproject.llmmanager.querylog.exception.QueryLogExceptionStatus;
@@ -19,7 +21,7 @@ public class QueryLogFacade {
     private static final int MAX_RETRY = 5;
     private static final long RETRY_DELAY_MS = 50;
 
-    public QueryResponse submitQuery(Long userId, QueryRequest request) {
+    public QueryResult submitQuery(Long userId, QueryCommand command) {
         // 1. Rate Limit 먼저 체크 (재시도 전)
         if (!rateLimiter.isAllowed(userId)) {
             throw new BaseException(QueryLogExceptionStatus.TOO_MANY_REQUESTS);
@@ -31,7 +33,7 @@ public class QueryLogFacade {
 
         while (attempt < MAX_RETRY) {
             try {
-                return queryLogService.submitQuery(userId, request);
+                return queryLogService.submitQuery(userId, command);
             } catch (OptimisticLockException e) {
                 lastException = e;
                 attempt++;
