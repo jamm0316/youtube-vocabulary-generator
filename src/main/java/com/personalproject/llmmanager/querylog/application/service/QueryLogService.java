@@ -1,8 +1,6 @@
 package com.personalproject.llmmanager.querylog.application.service;
 
 import com.personalproject.llmmanager.common.exception.BaseException;
-import com.personalproject.llmmanager.querylog.adapter.in.web.request.QueryRequest;
-import com.personalproject.llmmanager.querylog.adapter.in.web.response.QueryResponse;
 import com.personalproject.llmmanager.querylog.application.dtos.command.QueryCommand;
 import com.personalproject.llmmanager.querylog.application.dtos.result.QueryResult;
 import com.personalproject.llmmanager.querylog.domain.model.ModelType;

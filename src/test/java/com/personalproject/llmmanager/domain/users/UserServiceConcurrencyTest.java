@@ -2,7 +2,6 @@ package com.personalproject.llmmanager.domain.users;
 
 import com.personalproject.llmmanager.plan.domain.model.Plan;
 import com.personalproject.llmmanager.plan.domain.model.PlanType;
-import com.personalproject.llmmanager.querylog.adapter.in.web.request.QueryRequest;
 import com.personalproject.llmmanager.querylog.application.dtos.command.QueryCommand;
 import com.personalproject.llmmanager.querylog.application.facade.QueryLogFacade;
 import com.personalproject.llmmanager.querylog.port.LlmPort;
