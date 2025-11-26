@@ -1,8 +1,8 @@
 package com.personalproject.llmmanager.users.adapter.in.web;
 
-import com.personalproject.llmmanager.users.application.commandquery.UsageResponse;
-import com.personalproject.llmmanager.users.application.commandquery.UserCreateRequest;
-import com.personalproject.llmmanager.users.application.commandquery.UserInfoResponse;
+import com.personalproject.llmmanager.users.adapter.in.web.response.UsageResponse;
+import com.personalproject.llmmanager.users.adapter.in.web.request.UserCreateRequest;
+import com.personalproject.llmmanager.users.adapter.in.web.response.UserInfoResponse;
 import com.personalproject.llmmanager.users.application.service.UsersService;
 import com.personalproject.llmmanager.users.domain.model.Users;
 import jakarta.validation.Valid;
@@ -20,12 +20,11 @@ public class UserController {
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     public UserInfoResponse create(@Valid @RequestBody UserCreateRequest request) {
-        Users user = usersService.createUser(request);
-        return UserInfoResponse.from(user);
+        return UserInfoResponse.from(usersService.createUser(request.toCommand()));
     }
 
     @PostMapping("/usage")
     public UsageResponse getUsage(@RequestHeader("X-User-Id") Long userId) {
-        return usersService.getUserUsage(userId);
+        return UsageResponse.from(usersService.getUserUsage(userId));
     }
 }
