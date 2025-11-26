@@ -1,6 +1,7 @@
 package com.personalproject.llmmanager.users.adapter.out.persistence;
 
-import com.personalproject.llmmanager.users.application.commandquery.UserInfoResponse;
+import com.personalproject.llmmanager.users.adapter.in.web.response.UserInfoResponse;
+import com.personalproject.llmmanager.users.application.dtos.result.UserInfoResult;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +21,7 @@ public interface SpringDataJpaUsersRepository extends JpaRepository<UsersJpaEnti
     int resetAllUserTokens();
 
     @Query("""
-           SELECT new com.personalproject.llmmanager.users.application.commandquery.UserInfoResponse(
+           SELECT new com.personalproject.llmmanager.users.application.dtos.result.UserInfoResult(
               u.account,
               u.name,
               u.plan.type,
@@ -32,5 +33,5 @@ public interface SpringDataJpaUsersRepository extends JpaRepository<UsersJpaEnti
            )
            FROM UsersJpaEntity u
            """)
-    List<UserInfoResponse> findAllUsersInfo();
+    List<UserInfoResult> findAllUsersInfo();
 }

@@ -4,7 +4,8 @@ import com.personalproject.llmmanager.common.exception.BaseException;
 import com.personalproject.llmmanager.plan.adapter.out.persistence.PlanJpaEntity;
 import com.personalproject.llmmanager.plan.adapter.out.persistence.SpringDataJpaPlanRepository;
 import com.personalproject.llmmanager.plan.exception.PlanExceptionStatus;
-import com.personalproject.llmmanager.users.application.commandquery.UserInfoResponse;
+import com.personalproject.llmmanager.users.adapter.in.web.response.UserInfoResponse;
+import com.personalproject.llmmanager.users.application.dtos.result.UserInfoResult;
 import com.personalproject.llmmanager.users.domain.model.Users;
 import com.personalproject.llmmanager.users.port.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class UsersRepositoryImpl implements UsersRepository {
     }
 
     @Override
-    public List<UserInfoResponse> findAllUsersInfo() {
+    public List<UserInfoResult> findAllUsersInfo() {
         return jpaUsersRepository.findAllUsersInfo();
     }
 
