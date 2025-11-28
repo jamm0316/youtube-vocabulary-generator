@@ -1,6 +1,7 @@
 package com.personalproject.llmmanager.querylog.domain.model;
 
 import com.personalproject.llmmanager.common.exception.BaseException;
+import com.personalproject.llmmanager.query.domain.Query;
 import com.personalproject.llmmanager.querylog.exception.QueryLogExceptionStatus;
 import com.personalproject.llmmanager.users.domain.model.Users;
 import lombok.Builder;
@@ -49,5 +50,25 @@ public class QueryLog {
         if (Objects.isNull(type)) throw new BaseException(QueryLogExceptionStatus.MODEL_TYPE_CANNOT_BE_NULL);
         if (Objects.isNull(answer)) throw new BaseException(QueryLogExceptionStatus.ANSWER_CANNOT_BE_NULL);
         if (Objects.isNull(usedTokens)) throw new BaseException(QueryLogExceptionStatus.USED_TOKEN_CANNOT_BE_NULL);
+    }
+
+    public static QueryLog from(Query query, Users user) {
+        validationQueryLogInvariants(
+                user,
+                query.getUrl(),
+                query.getModelType(),
+                query.getAnswer(),
+                query.getUsedTokens()
+        );
+
+        return new QueryLog(
+                null,
+                user.getId(),
+                query.getModelType(),
+                query.getUrl().trim(),
+                query.getAnswer(),
+                query.getUsedTokens(),
+                LocalDateTime.now()
+        );
     }
 }
