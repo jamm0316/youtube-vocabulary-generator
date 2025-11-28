@@ -1,6 +1,9 @@
 package com.personalproject.llmmanager.querylog.application.service;
 
+import com.personalproject.llmmanager.common.baseResponse.BaseResponse;
 import com.personalproject.llmmanager.common.exception.BaseException;
+import com.personalproject.llmmanager.query.domain.Query;
+import com.personalproject.llmmanager.query.domain.QueryExecution;
 import com.personalproject.llmmanager.querylog.application.dtos.command.QueryCommand;
 import com.personalproject.llmmanager.querylog.application.dtos.result.QueryResult;
 import com.personalproject.llmmanager.querylog.domain.model.ModelType;
@@ -27,34 +30,36 @@ public class QueryLogService {
     @Transactional
     public QueryResult submitQuery(Long userId, QueryCommand command) {
         //1. 사용자 조회
-        Users user = usersRepository.findUserById(userId)
-                .orElseThrow(() -> new BaseException(UserExceptionStatus.USER_NOT_FOUND));
+        Users user = findUser(userId);
 
-        //2. 잔여 토큰 확인
-        user.validateQueryPermission();
-
-        Long usedTokens = tokenCalculator.calculateTokensFromPrompt(command.url());
-        String answer;
+        //2. Query 도메인 생성 및 토큰 계산
+        Query query = Query.start(user, command.url(), ModelType.from(command.model())).calculateTokens(tokenCalculator);
 
         //3. llm 호출
+        String answer = callLlm(command);
+
+        //4. Query 완료 및 실행
+        QueryExecution execution = query.complete(answer).execute();
+
+        //5. 영속화
+        usersRepository.save(execution.users());
+        queryLogRepository.save(execution.queryLog());
+
+        return execution.toResult();
+    }
+
+    private Users findUser(Long userId) {
+        return usersRepository.findUserById(userId)
+                .orElseThrow(() -> new BaseException(UserExceptionStatus.USER_NOT_FOUND));
+    }
+
+    private String callLlm(QueryCommand command) {
         try {
             //todo: url v=~~~~ -> video id만 param으로 넘긴다.
             //todo: param token -> access Token
-            answer = llmPort.query(command.url(), command.model());
+            return llmPort.query(command.url(), command.model());
         } catch (Exception e) {
             throw new BaseException(QueryLogExceptionStatus.LLM_API_ERROR);
         }
-
-        //4. 토큰 사용
-        Users userWithTokensUsed = user.useTokens(usedTokens);
-
-        //5. 변경된 사용자 정보를 Repository에 전달하여 저장
-        Users updatedUser = usersRepository.save(userWithTokensUsed);
-
-        //6. queryLog 저장
-        QueryLog queryLog = QueryLog.create(updatedUser, command.url(), ModelType.from(command.model()), answer, usedTokens);
-        QueryLog saveQuery = queryLogRepository.save(queryLog);
-
-        return QueryResult.of(saveQuery, updatedUser);
     }
 }
