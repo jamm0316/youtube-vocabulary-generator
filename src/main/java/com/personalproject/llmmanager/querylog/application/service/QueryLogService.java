@@ -1,13 +1,11 @@
 package com.personalproject.llmmanager.querylog.application.service;
 
-import com.personalproject.llmmanager.common.baseResponse.BaseResponse;
 import com.personalproject.llmmanager.common.exception.BaseException;
 import com.personalproject.llmmanager.query.domain.Query;
 import com.personalproject.llmmanager.query.domain.QueryExecution;
 import com.personalproject.llmmanager.querylog.application.dtos.command.QueryCommand;
 import com.personalproject.llmmanager.querylog.application.dtos.result.QueryResult;
 import com.personalproject.llmmanager.querylog.domain.model.ModelType;
-import com.personalproject.llmmanager.querylog.domain.model.QueryLog;
 import com.personalproject.llmmanager.querylog.domain.policy.TokenCalculator;
 import com.personalproject.llmmanager.querylog.exception.QueryLogExceptionStatus;
 import com.personalproject.llmmanager.querylog.port.LlmPort;
